@@ -1,0 +1,22 @@
+{
+    "name": "dingtalk_pro",
+    "options": {
+        "template": "C:\\Users\\CAODAP\\.nowa-gui\\template\\dingyou-dingtalk-mobile-v_2",
+        "npm": "http://registry.npmjs.org",
+        
+        "vars": {  "ENV": "develop"  }, 
+        "buildvars": {  "ENV": [ "test" ] }, 
+        
+        "alias": { 
+            "apis": "apis",
+            "assets": "assets",
+            "config": "config",
+            "image": "assets/img",
+            "icon": "assets/icon",
+            "components": "components",
+            "dings": "dings",
+            "pages": "pages",
+            "utils": "utils"
+        }
+    }
+}

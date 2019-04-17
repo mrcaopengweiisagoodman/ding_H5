@@ -1,0 +1,35 @@
+{
+    "name": "dingtalk_pro",
+    "author": "CAODAP",
+    "version": "1.0.0",
+    "description": "An awesome project",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "scripts": {
+        "start": "nowa server -p 3000 -e index.js",
+        "build": "nowa build -e index.js"
+    },
+    "homepage": "",
+    "license": "MIT",
+    "dependencies": {
+        "antd-mobile": "^2.2.11",
+        "classnames": "^2.2.6",
+        "dingtalk-jsapi": "^2.6.26",
+        "jquery": "^3.4.0",
+        "natty-storage": "^1.1.2",
+        "rc-form": "^2.4.4",
+        "react": "^15.4.2",
+        "react-dom": "^15.4.2",
+        "react-keeper": "^2.0.6",
+        "react-router": "^4.1.1",
+        "refast": "^1.1.0",
+        "svg-sprite-loader": "^0.3.0",
+        "unity-api": "^2.2.1"
+    },
+    "devDependencies": {
+        "babel-plugin-import": "~1.0.1",
+        "babel-preset-stage-0": "^6.24.1"
+    }
+}

@@ -1,0 +1,119 @@
+@import './../../assets/css/reset.less';
+body{
+	height: 100vh;
+	background: #f7f8f9;
+}
+.tendering{
+/* 顶部tab、搜索 */
+	.am-tabs{
+		height: 100vh;
+	}
+	.searchBox{
+		box-sizing: border-box;
+		background: #ffffff;
+		/* 顶部title */
+		.am-search-input{
+			max-width: 100%;
+			background: #dde1e4;
+			box-sizing: border-box;
+			.am-search-synthetic-ph{
+				margin-left: 1rem;
+				text-align: left;
+				.am-search-synthetic-ph-placeholder{
+					opacity: 1;
+				}
+			}
+			/* 搜索input */
+			.am-search-value{
+				padding-left: 4.4rem!important;
+				color: #333333;
+			}
+		}
+		/* 取消按钮 */
+		.am-search-cancel{
+			display: none;
+		}
+	}
+	/* 下方滑块 */
+	.am-tabs-content-wrap{
+		height: calc(100% - 4rem);
+	}
+/* 中间tab主体 */
+	.listBox{
+		width: 94vw;
+		margin: 1rem auto 0;
+		.am-list-item{
+			padding-left: 3vw;
+		}
+		.list{
+			padding: 1rem 3vw;
+			background: #ffffff;
+			.tenderingTitle{
+				display: flex;
+				align-items: center;
+				div{
+					width: 8rem;
+					height: 2.5rem;
+					line-height: 2.5rem;
+					font-size: 1.4rem;
+					color: #ffffff;
+					text-align: center;
+					background: #a3a5a8;
+					border-radius: 1.1rem;
+				}
+				.h2{
+					flex: 1;
+					line-height: 2rem;
+					font-size: 1.5rem;
+					color: #191f25;
+					font-weight: bold;
+					margin-left: 3vw;
+					.textOverflow();
+				}
+			}
+			p{
+				color: #78787a;
+				font-size: 1.5rem;
+				.textOverflow();
+				margin: 1rem 0;
+			}
+			.line{
+				.line_gray();
+			}
+			.tenderingDetail{
+				margin-top: 1rem;
+				.flex_bc();
+				.blueBox_{
+					.blueBox();
+					margin-right: .5rem;
+				}
+				font-size: @f_15;
+				img{
+					width: 1rem;
+					height: 1.5rem;
+				}
+			}
+		}
+	}
+/* 新增页面按钮 */
+	.addTendering{
+		position: fixed;
+		right: 3vw;
+		bottom: 7vh;
+		width: 6.4rem;
+		height: 6.4rem;
+		z-index: 2;
+	}
+
+
+}
+.am-tabs-tab-bar-wrap{
+	height: 4rem;
+}
+.am-tabs-default-bar-content::after{
+	top: 4rem;
+}
+.am-tabs-default-bar-tab{
+	height: 4rem;
+}
+.am-search{padding: 0 3vw;}

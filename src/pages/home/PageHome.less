@@ -1,0 +1,42 @@
+/* 公共样式函数 */
+@import './../../assets/css/reset.less';
+
+
+html,body{background: @c_fff;}
+.home{
+	.navBox{
+		.flex_w;
+	}
+	.approvalNav{ display: block;}
+	.rectangle {
+		width: 90%;
+		height: 1px;
+		margin: 2.5rem auto 1.5rem;
+		background-color: #f4f4f4;
+		border-radius: 1px;
+	}
+	.navList{
+		position: relative;
+		width: 25%;
+		margin: 1rem 4%;
+		font-size: @f_14;
+		text-align: center;
+		img{
+			width: 6.4rem;
+			height: 6.4rem;
+		}
+		p{ margin: 1rem 0; }
+		div{
+			position: absolute;
+			top: -.4rem;
+			right: .7rem;
+			height: 1.7rem;
+			line-height: 1.7rem;
+			padding: 0 .5rem;
+			color: @c_fff;
+			background: @c_red;
+			box-shadow: -1px 1px 0px 2px @c_fff;
+			border-radius: .85rem;
+		}
+	}
+}
