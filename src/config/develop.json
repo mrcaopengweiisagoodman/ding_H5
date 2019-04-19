@@ -4,5 +4,6 @@
     "AGENTID": 250221472,
     "AUTH_URL": "http://192.168.3.219:8888/",
     "APP_URL": { "url": "http://192.168.3.219:8888/" },
-    "MOCK_URL": "http://192.168.3.219:8888/" 
+    "MOCK_URL": "http://192.168.3.219:8888/",
+    "IMGCOMMONURI": "src/assets/imgs/" 
 }

@@ -8,7 +8,9 @@ export default {
 		console.log(props,PageConst)
         return {  
 			...PageConst,
-			searchVal: ''
+			searchVal: '',
+			data_lianxiren: null
+
         }
     },
 	// 更改状态
@@ -16,5 +18,6 @@ export default {
 		ctx.setState({
 			searchVal: data
 		})
-	}
+	},
+	
 };

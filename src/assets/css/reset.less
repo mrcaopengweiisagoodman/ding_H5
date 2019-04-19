@@ -42,6 +42,7 @@
 ul,ol,li{list-style-type:none;}
 a{ text-decoration:none;}
 img{border:none;}
+
 /* 两行溢出,省略号 */
 .textOverflow () {
 	text-overflow: -o-ellipsis-lastline;
@@ -52,6 +53,15 @@ img{border:none;}
 	line-clamp: 2;
 	-webkit-box-orient: vertical;
 }
+.textOverflow_1{
+	text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
 /* 公共样式 */
 	/* 字体大小 */
 @f_14: 1.4rem;
@@ -59,6 +69,8 @@ img{border:none;}
 	/* 字体颜色 */
 @c_red: red;
 @c_fff: #FFFFFF;
+.color_b {color: #2d87f7}
+.color_g {color: #15bc83}
 .flex{
 	display: flex;
 	align-items: center;
@@ -102,4 +114,44 @@ img{border:none;}
 	background: #fff;
 	border: 1px solid #2d87f7;
 	border-radius: 2px;
+}
+/* 人员名展示 */
+.box_b{
+	height: 2.7rem;
+	line-height: 2.7rem;
+	padding: 0 10px;
+	text-align: center;
+	font-size: 1.4rem;
+	border: 1px solid #2d87f7;
+	background: #ebf4ff;
+	border-radius: .2rem;
+}
+.box_g{
+	height: 2.7rem;
+	line-height: 2.7rem;
+	padding: 0 10px;
+	text-align: center;
+	font-size: 1.4rem;
+	border: 1px solid #15bc83;
+	background: #ecfff8;
+	border-radius: .2rem;
+}
+/* 灰色线 */
+.line_gray{
+	height: 1px;
+	background: rgba(25, 31, 37, 0.08);
+	margin: 0 3vw;
+}
+/* 底部长条提交按钮---蓝色 */
+.btnBlueLong{
+	display: block;
+	width: 94vw;
+	height: 4.4rem;
+	line-height: 4.4rem;
+	margin: 1rem auto 0;
+	text-align: center;
+	font-size: 1.7rem;
+	color: rgba(255, 255, 255, 0.56);
+	background: #2d87f7;
+	border-radius: 6px;
 }

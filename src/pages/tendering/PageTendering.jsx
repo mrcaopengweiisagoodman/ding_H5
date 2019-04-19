@@ -17,22 +17,15 @@ import {
 	Link
 } from 'react-keeper';
 // import SearchBarMine from '../../components/searchBar/searchbar';
+import mydingready from './../../dings/mydingready';
 
 const TabPane = Tabs.TabPane;
 const Item = List.Item;
 
 class Tendering extends Component {
     constructor(props) { 
-        super(props, logic);        
-        dd.ready(()=>{
-        	dd.biz.navigation.setTitle({ 
-        		title:'招投标' ,
-        		onSuccess: res => {
-        		},
-        		onFail: res => {
-        		}
-        	});
-        })
+        super(props, logic);    
+		mydingready.ddReady({pageTitle: '招投标'});
     }
 	componentDidMount () {
 		this.autoFocusInst.focus();

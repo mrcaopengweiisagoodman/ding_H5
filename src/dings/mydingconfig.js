@@ -1,6 +1,6 @@
 import jsapi from './jsapi.json';
 import $ from "jquery";
-
+import mydingready from './mydingready';
 const { CORP_ID, AUTH_URL, APP_URL } = require(`config/develop.json`);
 
 
@@ -39,7 +39,6 @@ class DingConfigMine {
 							'biz.contact.choose'
 						] // 必填，需要使用的jsapi列表*/
 					});
-					alert('配置成功');
 					dd.error(function(err) {
 						dd.device.notification.alert({
 							message: "鉴权失败" + JSON.stringify(err),
@@ -60,6 +59,10 @@ class DingConfigMine {
 		.then( r => {
 			if (r.state == 'SUCCESS') {
 				let token = r.values.token;
+				console.log(token)
+				// 把token存储到本地，用来获取临时用户id
+				localStorage.setItem('access_token',token)
+				
 				$.ajax({
 					url: `http://192.168.3.219:8888/ding/gain/ticket`,
 					type: 'GET',

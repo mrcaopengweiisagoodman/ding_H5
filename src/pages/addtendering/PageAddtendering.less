@@ -25,6 +25,84 @@ body{background: #ffffff;}
 			.flex_cc();
 		}
 	}
+	
+	.fileBox{
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		background: rgba(246,246,246,.5);
+		.file{
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 30vw;
+			height: 30vw;
+			margin: 10px 1.5vw;
+			.fileIcon{
+				width: 5.2rem;
+				height: 6.2rem;
+				margin-bottom: .5rem;
+			}
+			.selectedBtn{
+				width: 6.2rem;
+				height: 6.2rem;
+			}
+			p{
+				height: 1.5rem;
+				line-height: 1.5rem;
+				font-size: 1.4rem;
+				color: #333;
+			}
+			.closeBtn{
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 0 0 10px 10px;
+				img{
+					width: 1.4rem;
+					height: 1.4rem;
+				}
+			}
+		}
+	}
+	.selectedMan{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1.5vh 3vw;
+		color: #191f25;
+		p{
+			font-size: 1.4rem;
+		}
+		.manArr{
+			display: flex;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+			width: 70vw;
+			margin: 0 2vw;
+			div{
+				position: relative;
+				img{
+					position: absolute;
+					top: -.75rem;
+					right: -.75rem;
+					width: 1.5rem;
+					height: 1.5rem;
+				}
+			}
+		}
+		.selectedBtn{
+			width: 2.2rem;
+			height: 2.2rem;
+		}
+	}
+
+
+	/* 边线颜色
+	rgba(25, 31, 37, 0.08)
+	*/
 	.goContacts{
 		width: 100px;
 		height: 100px;
