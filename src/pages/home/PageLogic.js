@@ -20,7 +20,7 @@ export default {
 				agentId: '', // 必填，微应用ID
 				corpId: 0,//必填，企
 			},
-			data_lianxiren: null
+			approver: null
         }
     },
 

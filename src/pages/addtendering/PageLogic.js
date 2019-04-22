@@ -1,3 +1,4 @@
+// addtendering
 import { apiSync } from 'utils'
 import PageConst from './PageConst';
 
@@ -5,7 +6,8 @@ export default {
     defaults(props) {
         //初始的state
         return {  
-        	data_lianxiren: 'null'
+        	approver: [], // 审批人
+        	copyPerson: [], // 抄送人  
         }
     },
     /**
@@ -15,7 +17,11 @@ export default {
 	 */
 	setStateData (ctx,val) {
 		console.log(ctx,val)
-		alert('更改state',JSON.stringify(val));
+		dd.device.notification.alert({
+			message: "更改state的值:" + JSON.stringify(val),
+			title: "警告",
+			buttonName: "确定"
+		});
 		ctx.setState(val);
 	},
 };

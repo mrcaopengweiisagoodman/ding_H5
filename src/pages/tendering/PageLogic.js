@@ -8,8 +8,15 @@ export default {
 		console.log(props,PageConst)
         return {  
 			...PageConst,
-			searchVal: '',
-			data_lianxiren: null
+			listData: [],
+			pageInfo: {
+				pageNum: 1,
+				pageSize: 1000,
+				searchWord: '',
+				// CHECKING-待审核;PASS-通过;REBUT-驳回;
+				state: 'CHECKING',
+				userId: null
+			},
 
         }
     },
@@ -19,5 +26,14 @@ export default {
 			searchVal: data
 		})
 	},
-	
+	/**
+	 * 修改state
+	 * @param ctx
+	 * @param val 
+	 */
+	setStateData (ctx,val) {
+		console.log(ctx,val)
+		alert('更改state',JSON.stringify(val));
+		ctx.setState(val);
+	},
 };

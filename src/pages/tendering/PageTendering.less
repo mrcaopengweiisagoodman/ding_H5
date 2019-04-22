@@ -4,6 +4,7 @@ body{
 	background: #f7f8f9;
 }
 .tendering{
+	background: #f7f8f9;
 /* 顶部tab、搜索 */
 	.am-tabs{
 		height: 100vh;
@@ -40,12 +41,15 @@ body{
 	}
 /* 中间tab主体 */
 	.listBox{
+		display: block;	
 		width: 94vw;
 		margin: 1rem auto 0;
+		border-radius: 6px;
 		.am-list-item{
 			padding-left: 3vw;
 		}
 		.list{
+			width: 100%;
 			padding: 1rem 3vw;
 			background: #ffffff;
 			.tenderingTitle{
@@ -79,6 +83,7 @@ body{
 			}
 			.line{
 				.line_gray();
+				margin: 0;
 			}
 			.tenderingDetail{
 				margin-top: 1rem;

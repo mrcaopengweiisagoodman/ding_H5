@@ -18,6 +18,7 @@ import {
 	NavBar ,
 	Toast
 } from 'antd-mobile';
+const { IMGCOMMONURI } = require(`config/develop.json`);
 
 
 class Home extends Component {
@@ -35,28 +36,24 @@ class Home extends Component {
 
 				<Link className="navList approvalNav" to="/pageApproval">
 					{/* 正式环境图片的路径 */}
-					{/*<img src="imgs/dsp.png" />*/}
-					<img src="src/assets/imgs/dsp.png" />
+					<img src={`${IMGCOMMONURI}dsp.png`} />
 					<p>待我审批</p>
 					<div>12</div>	
 				</Link>
 				<div className="rectangle"></div>
 				<Flex wrap="wrap">
 					<Link className="navList" to="/tendering">
-						{/*<img src="imgs/ztb.png" /> */}
-						<img src="src/assets/imgs/ztb.png" />
+						<img src={`${IMGCOMMONURI}ztb.png`} />
 						<p>招投标</p>
 						<div>12</div>	
 					</Link>
 					<Link className="navList" to="/contract">
-						{/* <img src="imgs/ht.png" /> */}
-						<img src="src/assets/imgs/ht.png" />
+						<img src={`${IMGCOMMONURI}ht.png`} />
 						<p>合同</p>
 						<div>12</div>	
 					</Link>
 					<Link className="navList" to="/audit">
-						{/* <img src="imgs/ns.png" /> */}
-						<img src="src/assets/imgs/ns.png" /> 
+						<img src={`${IMGCOMMONURI}ns.png`} />
 						<p>年审</p>
 						<div>12</div>	
 					</Link>

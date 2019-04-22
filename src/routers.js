@@ -8,6 +8,7 @@ import Audit from 'pages/audit/';
 import Contract from 'pages/contract/';
 import Tendering from 'pages/tendering/';
 import AddTendering from 'pages/addtendering/';
+import Detailtendering from 'pages/detailtendering/';
 
 const rootRoute =
     <HashRouter>
@@ -18,6 +19,7 @@ const rootRoute =
 			<Contract.route />
 			<Tendering.route />
 			<AddTendering.route />
+			<Detailtendering.route />
 		</div>
     </HashRouter>;
 

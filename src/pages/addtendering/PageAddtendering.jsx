@@ -21,6 +21,10 @@ class AddtenderingForm extends Component {
 	submit = () => {
 		this.props.form.validateFields((error, value) => {
 			console.log(error, value);
+			if (!error) {
+				let { approver } = this.state;
+
+			}
 		});
 	}
 	/**
@@ -33,6 +37,12 @@ class AddtenderingForm extends Component {
 	* 发送自定义事件（设置state）
 	*/
 	dispatchFn = (val) => {
+		dd.device.notification.alert({
+			message: "dispatchFn---" + JSON.stringify(val),
+			title: "Huooo",
+			buttonName: "OK"
+		});
+
 		this.dispatch('setStateData',val)
 	}
 	/**
@@ -57,27 +67,60 @@ class AddtenderingForm extends Component {
 			setFn: this.dispatchFn
 		});
 		dd.device.notification.alert({
-			message: "选取联系人返回的信息: " + JSON.stringify(ddApiState),
+			message: "选取联系人返回的信息:--- " + JSON.stringify(ddApiState),
 			title: "联系人返回信息",
 			buttonName: "确定"
 		});
 	}
 
+	/*
+	* 删除选中的联系人
+	*/
+	delContact = (emplId) => {
+
+	}
     render() {
 		const { getFieldProps } = this.props.form;
-		const { data_lianxiren } = this.state; 
-		// this.addContact(data_lianxiren);
+		const { approver , copyPerson} = this.state; 
 		/*let data = {"users":[{"name":"田帅","avatar":"","emplId":"0125056400954069"},{"name":"曹鹏伟","avatar":"","emplId":"042827545726609513"}],"departments":[{"id":111712572,"name":"部门1","number":1},{"id":111012582,"name":"＆","number":1}],"selectedCount":4};
 		this.addContact(data);*/
 
+		dd.device.notification.alert({
+			message: "选取联系人返回的信息:--- " + JSON.stringify(approver),
+			title: "联系人返回信息",
+			buttonName: "确定"
+		});
+		let data1 = [{"name":"田帅","avatar":"","emplId":"0125056400954069"}];
+		let approverCom = approver.map(v=>{
+		    return <div key={v.emplId}>
+						<div className="manArr">
+							<div className="box_b">
+								<p className="color_b">{v.name}</p>
+								<img src={`${IMGCOMMONURI}delete.png`} onClick={()=>this.delContact(v.emplId)} />
+							</div>
+						</div>
+			        </div>
 
+		});
+		let copyPersonCom = data1.map(v=>{
+		    return <div key={v.emplId}>
+						<div className="manArr">
+							<div className="box_b">
+								<p className="color_b">{v.name}</p>
+								<img src={`${IMGCOMMONURI}delete.png`} onClick={()=>this.delContact(v.emplId)} />
+							</div>
+						</div>
+			        </div>
+
+		})
+	
         return (
             <div className="addTendering">
 				{/* <form onSubmit={this.submit}> */}
 					
 					
 
-					<div>{data_lianxiren}</div>
+					<div>uidufudof---{JSON.stringify(approver)}</div>
 
 
 
@@ -91,7 +134,7 @@ class AddtenderingForm extends Component {
 						></InputItem>
 					</div>
 					<div className="line_gray"></div>
-					<div className="name">
+					<div className="biddingName">
 						<TextareaItem 
 							className="textArea"
 							rows={5}
@@ -118,24 +161,20 @@ class AddtenderingForm extends Component {
 					</div>
 					<div className="selectedMan">
 						<p>审批人</p>
-						<div className="manArr">
-							<div className="box_b">
-								<p className="color_b">人名一</p>
-								<img src={`${IMGCOMMONURI}delete.png`} />
-							</div>
-						</div>
-						<img className="fileIcon selectedBtn" src={`${IMGCOMMONURI}add_small.png`} onClick={() => this.toDdJsApi('lianxiren')} />
+						{approverCom}
+						{/*<div className="manArr">
+													<div className="box_b">
+														<p className="color_b">人名一</p>
+														<img src={`${IMGCOMMONURI}delete.png`} />
+													</div>
+												</div>*/}
+						<img className="fileIcon selectedBtn" src={`${IMGCOMMONURI}add_small.png`} onClick={() => this.toDdJsApi('approver')} />
 					</div>
 					<div className="line_gray"></div>
 					<div className="selectedMan">
 						<p>抄送人</p>
-						<div className="manArr">
-							<div className="box_g">
-								<p className="color_g">人名一</p>
-								<img src={`${IMGCOMMONURI}delete.png`} />
-							</div>
-						</div>
-						<img className="fileIcon selectedBtn" src={`${IMGCOMMONURI}add_small.png`} onClick={() => this.toDdJsApi('lianxiren')} />
+						{copyPersonCom}
+						<img className="fileIcon selectedBtn" src={`${IMGCOMMONURI}add_small.png`} onClick={() => this.toDdJsApi('copyPerson')} />
 					</div>
 					<div className="line_gray"></div>
 					<button className="btnBlueLong" type="submit" onClick={this.submit}>提交</button>

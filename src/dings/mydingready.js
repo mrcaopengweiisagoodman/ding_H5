@@ -80,6 +80,7 @@ class DingReadyMine {
 			});
 		}*/
 		let _this = context,
+			stateStr,
 			self = this;
 		dd.ready(function() {
 			dd.biz.navigation.setTitle({ 
@@ -89,6 +90,10 @@ class DingReadyMine {
 				onFail: res => {
 				}
 			});
+			if (ddApiState == 'approver' || ddApiState == 'copyPerson') {
+				stateStr = ddApiState;
+				ddApiState = 'lianxiren';
+			}
 			let ddJsApiHandle = {
 				getUser: self.getUser,
 				// 选择联系人
@@ -115,9 +120,12 @@ class DingReadyMine {
 								title: "Huooo",
 								buttonName: "OK"
 							});
-							setFn({
+							/*setFn({
 								data_lianxiren: JSON.stringify(result)
-							});
+							});*/
+							setFn({
+								approver: JSON.parse(JSON.stringify(result)).users
+							})
 							// 把获取到的数据返回
 							// {"users":[{"name":"田帅","avatar":"","emplId":"0125056400954069"},{"name":"曹鹏伟","avatar":"","emplId":"042827545726609513"}],"departments":[{"id":111712572,"name":"部门1","number":1},{"id":111012582,"name":"＆","number":1}],"selectedCount":4}
 							//
