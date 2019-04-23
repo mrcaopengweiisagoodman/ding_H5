@@ -29,19 +29,20 @@ class DingReadyMine {
 		    fetch(`${AUTH_URL}ding/gain/userId?accessToken=${token}&code=${result.code}`)
      		.then( res => res.json())
      		.then( data => {
-     			// localStorage.setItem('userId',);
      			if (data.state == 'SUCCESS') {
 	      			_this.globalData = {
 	     				access_token: token,
 	     				code: result.code,
 	     				userId: data.values.userId
 	     			}
+	     			localStorage.setItem('userId',data.values.userId);
+	     			_this.getUserInfo(data.values.userId);
      			}
-     			dd.device.notification.alert({
-					message: "请求成功！" + JSON.stringify(data),
+     			/*dd.device.notification.alert({
+					message: "请求成功！access_token---" + JSON.stringify(data),
 					title: "提示信息",
 					buttonName: "确定"
-				});
+				});*/
      		})
 		    },
 		    onFail : function(err) {
@@ -53,6 +54,19 @@ class DingReadyMine {
 		    }
 		})
 	};
+	/*
+	* 获取用户名称、部门信息
+	* @param userId
+	*/
+	getUserInfo = (userId) => {
+		fetch(`${AUTH_URL}ding/gain/dept/info/${userId}`)
+		.then(res => res.json())
+		.then(data => {
+			if (data.state == 'SUCCESS') {
+     			localStorage.setItem('userName',data.values.name);
+			}
+		})
+	}
 	/**
 	* 需要鉴权的ddapi
 	* @param  context    上下文
@@ -73,12 +87,6 @@ class DingReadyMine {
 		setFn,
 		otherData
 	}) => {
-		/*if (setFn) {
-			console.log(setFn)
-			setFn({
-				data_lianxiren: '测试值'
-			});
-		}*/
 		let _this = context,
 			stateStr,
 			self = this;
@@ -106,13 +114,13 @@ class DingReadyMine {
 						limitTips:"超出了",          //超过限定人数返回提示
 						maxUsers:1000,            //最大可选人数
 						pickedUsers:[],            //已选用户
-						pickedDepartments:[],          //已选部门
+						// pickedDepartments:[],          //已选部门
 						disabledUsers:[],            //不可选用户
-						disabledDepartments:[],        //不可选部门
+						// disabledDepartments:[],        //不可选部门
 						requiredUsers:[],            //必选用户（不可取消选中状态）
-						requiredDepartments:[],        //必选部门（不可取消选中状态）
+						// requiredDepartments:[],        //必选部门（不可取消选中状态）
 						permissionType:"GLOBAL",          //可添加权限校验，选人权限，目前只有GLOBAL这个参数
-						responseUserOnly:false,        //返回人，或者返回人和部门
+						responseUserOnly: true,        //返回人，或者返回人和部门
 						startWithDepartmentId:0 ,   //仅支持0和-1
 						onSuccess: function(result) {
 							dd.device.notification.alert({
@@ -120,12 +128,15 @@ class DingReadyMine {
 								title: "Huooo",
 								buttonName: "OK"
 							});
-							/*setFn({
-								data_lianxiren: JSON.stringify(result)
-							});*/
-							setFn({
-								approver: JSON.parse(JSON.stringify(result)).users
-							})
+							if (stateStr == 'approver') {
+								setFn({
+									approver: JSON.parse(JSON.stringify(result)).users
+								})
+							} else if (stateStr == 'copyPerson') {
+								setFn({
+									copyPerson: JSON.parse(JSON.stringify(result)).users
+								})
+							}
 							// 把获取到的数据返回
 							// {"users":[{"name":"田帅","avatar":"","emplId":"0125056400954069"},{"name":"曹鹏伟","avatar":"","emplId":"042827545726609513"}],"departments":[{"id":111712572,"name":"部门1","number":1},{"id":111012582,"name":"＆","number":1}],"selectedCount":4}
 							//
@@ -173,93 +184,27 @@ class DingReadyMine {
 				// 钉盘上传文件
 				uploadFile: () => {
 					dd.biz.util.uploadAttachment({
-					    image:{multiple:true,compress:false,max:9,spaceId: "12345"},
-					    space:{corpId:"xxx3020",spaceId:"12345",isCopy:1 , max:9},
-					    file:{spaceId:"12345",max:1},
-					    types:["photo","camera","file","space"],//PC端支持["photo","file","space"]
+					    space:{corpId: CORP_ID,spaceId: otherData.spaceId,isCopy: 0, max: 9},
+					    file:{spaceId: otherData.spaceId,max:10},
+					    types:["file","space"],//PC端支持["photo","file","space"]
 					    onSuccess : function(result) {
-					    	dd.device.notification.alert({
-								message: "选取的文件---: " + JSON.stringify(result),
+					    	let enclosure = context.state.enclosure.concat(result.data);
+					    	if (result.data.length) {
+					    		setFn({enclosure: enclosure});
+					    	}
+					    	
+					    },
+					   	onFail : function(err) {
+					   		dd.device.notification.alert({
+								message: "文件选取失败" + JSON.stringify(err),
 								title: "选取文件",
 								buttonName: "确定"
 							});
-					    },
-					   	onFail : function(err) {
-
 					   	}
 					});
 				}
 			}
 			ddJsApiHandle[ddApiState]();
-			/*if (ddApiState == 'lianxiren') {
-				dd.biz.contact.complexPicker({
-					title:"测试标题",            //标题
-					corpId: CORP_ID,              //企业的corpId
-					appId: AGENTID,             //企业的corpId
-					multiple:true,            //是否多选
-					limitTips:"超出了",          //超过限定人数返回提示
-					maxUsers:1000,            //最大可选人数
-					pickedUsers:[],            //已选用户
-					pickedDepartments:[],          //已选部门
-					disabledUsers:[],            //不可选用户
-					disabledDepartments:[],        //不可选部门
-					requiredUsers:[],            //必选用户（不可取消选中状态）
-					requiredDepartments:[],        //必选部门（不可取消选中状态）
-					permissionType:"GLOBAL",          //可添加权限校验，选人权限，目前只有GLOBAL这个参数
-					responseUserOnly:false,        //返回人，或者返回人和部门
-					startWithDepartmentId:0 ,   //仅支持0和-1
-					onSuccess: function(result) {
-						dd.device.notification.alert({
-							message: "DD 联系人啊成功了 : " + JSON.stringify(result),
-							title: "Huooo",
-							buttonName: "OK"
-						});
-						setFn({
-							data_lianxiren: JSON.stringify(result)
-						});
-						// 把获取到的数据返回
-						// {"users":[{"name":"田帅","avatar":"","emplId":"0125056400954069"},{"name":"曹鹏伟","avatar":"","emplId":"042827545726609513"}],"departments":[{"id":111712572,"name":"部门1","number":1},{"id":111012582,"name":"＆","number":1}],"selectedCount":4}
-						//
-						//{
-						//    selectedCount:1,                              //选择人数
-					   //     users:[{"name":"","avatar":"","emplId":""}]，//返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），emplId（用户工号）三个字段
-						//    departments:[{"id":,"name":"","number":}]//返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数）
-						// }
-						//
-					},
-					onFail : function(err) {
-						dd.device.notification.alert({
-							message: "选择联系人错误:" + JSON.stringify(result),
-							title: "警告",
-							buttonName: "确定"
-						});
-					}
-				});
-			} else if (ddApiState == 'weizhi') {
-				dd.device.notification.alert({
-					message: "dd状态---: " + ddApiState,
-					title: "状态api",
-					buttonName: "OK"
-				});
-				dd.device.geolocation.get({
-					targetAccuracy : 200,
-					coordinate : 1,
-					withReGeocode : false,
-					useCache:true, //默认是true，如果需要频繁获取地理位置，请设置false
-					onSuccess : function(result) {
-						alert('位置成功啦啦啦啦啦啦啦啦');
-					},
-					onFail : function (err) {
-						// body...
-						dd.device.notification.alert({
-							message: "DD 位置失败 : " + JSON.stringify(err),
-							title: "位置失败",
-							buttonName: "OK"
-						});
-					},
-				})
-			}*/
-
 		})
 		
 	}

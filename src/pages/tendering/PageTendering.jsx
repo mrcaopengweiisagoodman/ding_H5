@@ -27,51 +27,68 @@ class Tendering extends Component {
     constructor(props) { 
         super(props, logic);    
 		mydingready.ddReady({pageTitle: '招投标'});
-		/*this.dispatch('setStateData',{
-			pageInfo: {
-				pageNum: 1,
-				pageSize: 10,
-				searchWord: '',
-				// CHECKING-待审核;PASS-通过;REBUT-驳回;
-				state: 'CHECKING',
-				userId: mydingready.globalData.userId
-			},
-		};*/
 		this.getTenderingList({state: 'CHECKING'});
-		
     }
 	componentDidMount () {
 
 		// this.autoFocusInst.focus();
 	}
 	/**
+	* 发送自定义事件（设置state）
+	*/
+	dispatchFn = (val) => {
+		this.dispatch('setStateData',val)
+	}
+	/**
 	* 获取招投标列表
 	*/
 	getTenderingList = ({state ,searchWord }) => {
-		let userId = mydingready.globalData.userId;
-		fetch(`${AUTH_URL}bidding/gain/type?state=${state}&userId=${userId}&searchWord=${searchWord}&pageNum=1&pageSize=1000`)
+		let userId = mydingready.globalData.userId ? mydingready.globalData.userId 
+												   : localStorage.getItem('userId');
+		let url = searchWord ? `${AUTH_URL}bidding/gain/type?state=${state}&userId=${userId}&searchWord=${searchWord}&pageNum=1&pageSize=1000`
+							 : `${AUTH_URL}bidding/gain/type?state=${state}&userId=${userId}&pageNum=1&pageSize=1000`
+		fetch(url)
 		.then(res => res.json())
 		.then(data => {
-			dd.device.notification.alert({
-				message: "列表请求成功！" + JSON.stringify(data),
-				title: "提示信息",
-				buttonName: "确定"
-			});
+			if (data.state == 'SUCCESS') {
+				this.dispatchFn({listData: data.values.biddings.list});
+				this.dispatchFn({
+					pageInfo: {
+						pageNum: 1,
+						pageSize: 1000,
+						searchWord: '',
+						// CHECKING-待审核;PASS-通过;REBUT-驳回;
+						state: state,
+						userId: null
+					},
+				});
+				
+				dd.device.notification.toast({
+				    icon: 'success', //icon样式，有success和error，默认为空
+				    text: '数据加载成功', //提示信息
+				    duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
+				});
+				return
+			}
+
 		})
 	}
 	/**
 	 * 搜索
 	 */
 	goSearch = (val) => {
-		console.log('文本框内容',val)
+		console.log('文本框内容',val,this.state.searchVal)
+		let { pageInfo , } = this.state;
+		this.getTenderingList({
+			state: pageInfo.state,
+			searchWord: val
+		})
 	}
 	/*
 	* 离焦
 	 */
-	searchBlur = () => {
+	searchBlur = (e) => {
 		this.dispatch('setSearchVal','');
-		console.log('离开焦点')
-
 	}
 	/**
 	 * 文本输入变化
@@ -79,70 +96,63 @@ class Tendering extends Component {
 	searchChange = (e) => {
 		this.dispatch('setSearchVal',e);
 	}
-
     render() {
-		const { tabs,searchVal } = this.state;
+		const { tabs, searchVal ,listData} = this.state;
 		const tabNode = tabs.forEach( (v,inx) => {
 			return <span>{v.title}</span>
+		})
+		let listCom = listData.map(v => {
+			return 	<Link to={`/detailtendering/${v.biddingId}`} className="listBox">
+						<div className="list">
+							<div className="tenderingTitle">
+								<div>招投标名称</div>
+								<span className="h2">{v.biddingName}</span>
+							</div>
+							<p>{v.content}</p>
+							<div className="line"></div>	
+							<div className="tenderingDetail">
+								<span>审批人</span>	
+								<div className="flex">
+									<div className="blueBox_">{JSON.parse(v.approver)[0].name}</div>	
+									<img src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
+								</div>
+							</div>
+						</div>
+					</Link>
 		})
         return (
             <div className="tendering">
 				{/* 招投标页面 */}
 				<Tabs tabs={tabs}
 					initialPage={0}
-					onChange={(tab, index) => { console.log('onChange', index, tab); }}
-					onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
+					onChange={(tab, index) => this.getTenderingList({state: tab.state})}
+					onTabClick={(tab, index) => console.log(tab.state)}
 				>
 					<div className="tabBody">
-						{/* <SearchBar className="searchBox" placeholder="审批人/投标名称" onSubmit={this.goSearch} onFocus={this.searchFocus} /> */}
 						<SearchBar className="searchBox" placeholder="审批人/投标名称" 
 							value={searchVal}
 							onSubmit={this.goSearch} 
 							onBlur={this.searchBlur}
 							onChange={this.searchChange}
 						/> 
-						<Link to="/detailtendering/111" className="listBox">
+						<Link to={`/detailtendering/72`} className="listBox">
 							<div className="list">
 								<div className="tenderingTitle">
 									<div>招投标名称</div>
-									<span className="h2">我是招投标的名称:杭州拱墅区哇哈哈团队招投标了</span>
+									<span className="h2">v.biddingName</span>
 								</div>
-								<p>
-									内容：国王湖(Königssee)位于德奥边境，四周被阿78787a78787a78787a绕，被认为是最干净和最美丽
-									内容：国王湖(Königssee)位于德奥边境，四周被阿尔卑斯山脉围绕，被认为是最干净和最美
-								</p>
+								<p>v.content</p>
 								<div className="line"></div>	
 								<div className="tenderingDetail">
 									<span>审批人</span>	
 									<div className="flex">
-										<div className="blueBox_">销量牛</div>	
-										{/* <span style={{fontSize: "2rem"}}>></span> */}
+										<div className="blueBox_">JSON.parse(v.approver)[0].name</div>	
 										<img src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
 									</div>
 								</div>
 							</div>
 						</Link>
-						<Link to="/detailtendering" className="listBox">
-							<div className="list">
-								<div className="tenderingTitle">
-									<div>招投标名称</div>
-									<span className="h2">我是招投标的名称:杭州拱墅区哇哈哈团队招投标了</span>
-								</div>
-								<p>
-									内容：国王湖(Königssee)位于德奥边境，四周被阿78787a78787a78787a绕，被认为是最干净和最美丽
-									内容：国王湖(Königssee)位于德奥边境，四周被阿尔卑斯山脉围绕，被认为是最干净和最美
-								</p>
-								<div className="line"></div>	
-								<div className="tenderingDetail">
-									<span>审批人</span>	
-									<div className="flex">
-										<div className="blueBox_">销量牛</div>	
-										{/* <span style={{fontSize: "2rem"}}>></span> */}
-										<img src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
-									</div>
-								</div>
-							</div>
-						</Link>
+						{listCom}
 					</div>
 					<div className="tabBody">
 						<SearchBar className="searchBox" placeholder="审批人/投标名称" 
@@ -152,7 +162,7 @@ class Tendering extends Component {
 							onChange={this.searchChange}
 						/> 
 						<div>
-							222222
+							{listCom}
 						</div>
 					</div>
 					<div className="tabBody">
@@ -163,7 +173,7 @@ class Tendering extends Component {
 							onChange={this.searchChange}
 						/> 
 						<div>
-							333333
+							{listCom}
 						</div>
 					</div>
 				</Tabs>

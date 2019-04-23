@@ -2,6 +2,24 @@
 require('./PageContract.less');
 import logic from './PageLogic';
 import { Component, LogicRender } from 'refast';  
+import { 
+    Tabs, 
+    WhiteSpace ,
+    WingBlank,
+    Badge,
+    SearchBar,
+    List
+} from 'antd-mobile';
+// import logic from './PageLogic';
+import {
+    Link
+} from 'react-keeper';
+// import SearchBarMine from '../../components/searchBar/searchbar';
+import mydingready from './../../dings/mydingready';
+const { AUTH_URL , IMGCOMMONURI } = require(`config/develop.json`);
+
+const TabPane = Tabs.TabPane;
+const Item = List.Item;
 
 
 class Contract extends Component {
@@ -19,9 +37,18 @@ class Contract extends Component {
     }
 
     render() {
+        const { tabs} = this.state;
+        const tabNode = tabs.forEach( (v,inx) => {
+            return <span>{v.title}</span>
+        })
         return (
             <div>
-				合同页面
+                <Tabs tabs={tabs}
+                    initialPage={0}
+                    onChange={(tab, index) => { console.log('onChange', index, tab); }}
+                    onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
+                >
+                </Tabs>
             </div>
         );
     }

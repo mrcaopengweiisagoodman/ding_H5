@@ -6,8 +6,10 @@ export default {
     defaults(props) {
         //初始的state
         return {  
+        	testStr: '',
         	approver: [], // 审批人
         	copyPerson: [], // 抄送人  
+        	enclosure: [], // 上传文件之后返回的数据数组
         }
     },
     /**
@@ -16,12 +18,6 @@ export default {
 	 * @param val 
 	 */
 	setStateData (ctx,val) {
-		console.log(ctx,val)
-		dd.device.notification.alert({
-			message: "更改state的值:" + JSON.stringify(val),
-			title: "警告",
-			buttonName: "确定"
-		});
 		ctx.setState(val);
 	},
 };

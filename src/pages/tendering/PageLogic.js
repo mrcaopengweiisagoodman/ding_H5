@@ -8,7 +8,7 @@ export default {
 		console.log(props,PageConst)
         return {  
 			...PageConst,
-			listData: [],
+			listData: [], // 招投标数据列表
 			pageInfo: {
 				pageNum: 1,
 				pageSize: 1000,
@@ -17,7 +17,6 @@ export default {
 				state: 'CHECKING',
 				userId: null
 			},
-
         }
     },
 	// 更改状态
@@ -32,8 +31,6 @@ export default {
 	 * @param val 
 	 */
 	setStateData (ctx,val) {
-		console.log(ctx,val)
-		alert('更改state',JSON.stringify(val));
 		ctx.setState(val);
 	},
 };
