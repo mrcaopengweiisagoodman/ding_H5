@@ -2,14 +2,16 @@ require('./PageDetailtendering.less');
 import logic from './PageLogic';
 import { Component, LogicRender } from 'refast';  
 import moment from 'moment';
+import { TextareaItem } from 'antd-mobile';
+import { createForm } from 'rc-form';
+
 const { AUTH_URL,IMGCOMMONURI } = require(`config/develop.json`);
 
 
 
-class Detailtendering extends Component {
+class DetailtenderingForm extends Component {
     constructor(props) { 
         super(props, logic);        
-        console.log(props.params)
         // this.dispatchFn({id: props.params});
         this.getDetail(props.params.id);
     }
@@ -43,16 +45,20 @@ class Detailtendering extends Component {
     previewFile = (fileId) => {
 
     }
+    /**
+    * 提交留言
+    */
+    submit = () => {
+
+    }
     render() {
         const { id ,detailData , styleInfo } = this.state;
-
-        console.log(styleInfo)
+        const { getFieldProps } = this.props.form;
 
         if (detailData) {
             const  enclosure = detailData.enclosure ? JSON.parse(detailData.enclosure) : [],
                 approver = detailData.approver ? JSON.parse(detailData.approver) : [],
                 copyPerson = detailData.copyPerson ? JSON.parse(detailData.copyPerson) : [];
-            console.log(approver,copyPerson)
             let enclosureCom = enclosure.map(v=>{
                 let fileTypeImg, 
                     fileTypeImgArr = ['ppt.png','ppt.png','excel.png','excel.png','word.png','word.png'];
@@ -73,15 +79,15 @@ class Detailtendering extends Component {
             });
             let copyPersonCom = copyPerson.map(v=>{
                 return  <div key={v.emplId} style={{margin: '5px 1.5vw'}}>
-                            <div className="box_b manBox">
-                                <p className="color_b">{v.name}</p>
+                            <div className="box_g manBox">
+                                <p className="color_g">{v.name}</p>
                             </div>
                         </div>
             });
             return (
                <div className="addTendering detailtendering">
                     <p className="title">基本信息</p>
-                    <div className="name">
+                    <div className="name titleStr">
                         {detailData ? detailData.biddingName : ''}
                     </div>
                     <div className="line_gray"></div>
@@ -106,31 +112,48 @@ class Detailtendering extends Component {
                         </div>
                     </div>
                     <div className="line_gray"></div>
-                    <div className="selectedMan">
+                    <div className="selectedMan lineTime">
                         <p className="color_gray">提交时间</p>
                         <div className="manArr detailManArr">
                             {moment(detailData.createTime).format('YYYY.MM.DD HH:mm')}
                         </div>
                     </div>
                     <div className="line_gray"></div>
-                    <div className="selectedMan">
+                    <div className="selectedMan lineTime">
                         <p className="color_gray">状态</p>
                         <div className="manArr detailManArr">
-                            <span className={styleInfo ? styleInfo[detailData.approvalState].color : ''}>{styleInfo[detailData.approvalState].str}</span>
+                            <span className={detailData.approvalState ? styleInfo[detailData.approvalState].color : ''}>{styleInfo[detailData.approvalState].str}</span>
                         </div>
                     </div>
                     <div className="line_gray"></div>
-                    <div className="selectedMan">
+                    <div className={detailData.approvalState == 'REBUT' ? 'isFlex selectedMan lineTime' : 'isHide'}>
                         <p className="color_gray">驳回原因</p>
                         <div className="manArr detailManArr">
-                            正在审批中
+                            {detailData.reason}
                         </div>
                     </div>
+                    {/* 留言板 */}
+                    <div className={detailData.approvalState == 'REBUT' ? 'line_gray' : 'isHide'}></div>
+                    <p className="title">投标附件</p>
+                   {/* <div className={detailData.approvalState == 'REBUT' ? 'selectedMan biddingName' : 'isHide'} style={{padding: '0 3vw'}}> */}
+                   <div className="biddingName selectedMan">
+                        <TextareaItem 
+                            className="textArea"
+                            rows={5}
+                            placeholder="请输入招投标内容"
+                            {...getFieldProps('messageBoard',{
+                                rules:[{required: false,message:'请输入招投标内容！'}]
+                            })}
+                        ></TextareaItem> 
+                    </div>
+                    <button className="btnBlueLong" type="submit" onClick={this.submit} style={{marginBottom: '1vh'}}>提交</button>
                 </div>
             );
+        } else {
+            return <div></div>
         }
     }
 
 }
-
+const Detailtendering = createForm()(DetailtenderingForm);
 export default Detailtendering ;

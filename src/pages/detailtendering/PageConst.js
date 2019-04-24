@@ -9,7 +9,7 @@ export default {
             color: 'color_b'
         },
         REBUT: {
-            str: '被反驳',
+            str: '被驳回',
             color: 'color_r'
             // color: 'rgba(240,86,66)'
         },

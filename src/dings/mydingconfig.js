@@ -1,13 +1,13 @@
 import jsapi from './jsapi.json';
 import $ from "jquery";
 import mydingready from './mydingready';
-const { CORP_ID, AUTH_URL, APP_URL } = require(`config/develop.json`);
+const { CORP_ID, AUTH_URL, APP_URL,CONFIG_APP_URL } = require(`config/develop.json`);
 
 
 class DingConfigMine {
 	getFn = () => {
 		$.ajax({
-			url: `http://192.168.3.219:8888/ding/sign?url=http://192.168.3.70:3000/?dd_nav_bgcolor=FF2D87F7`,
+			url: `http://192.168.3.219:8888/ding/sign?url=${CONFIG_APP_URL}?dd_nav_bgcolor=FF2D87F7`,
 			// url: `http://192.168.3.219:8888/ding/sign?url=http://192.168.3.219:8888/index.html?dd_nav_bgcolor=FF2D87F7`,
 			type:"GET",
 			dataType:'json',

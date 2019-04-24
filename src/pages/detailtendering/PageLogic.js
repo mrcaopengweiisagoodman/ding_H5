@@ -8,7 +8,7 @@ export default {
         	// 招投标id
         	id: '',
         	// 详情数据
-        	detailData: {}
+        	detailData: null
         }
     },
     /**

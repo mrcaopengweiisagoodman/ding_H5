@@ -66,7 +66,7 @@ class Tendering extends Component {
 				dd.device.notification.toast({
 				    icon: 'success', //icon样式，有success和error，默认为空
 				    text: '数据加载成功', //提示信息
-				    duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
+				    duration: 1, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
 				});
 				return
 			}
