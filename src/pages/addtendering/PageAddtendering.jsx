@@ -113,7 +113,19 @@ class AddtenderingForm extends Component {
 		}	
 		this.dispatchFn(data);
 	}
-
+	/**
+	* 预览文件
+	* @param [String] ddApiState  钉钉状态值
+	* @param [Object] fileInfo    要预览文件的信息
+	*/
+	previewFile = (ddApiState,fileInfo) => {
+		mydingready.ddReady({
+			context: this,
+			ddApiState: ddApiState,
+			setFn: this.dispatchFn,
+			otherData: fileInfo
+		});
+	}
 	submit = () => {
 		this.props.form.validateFields((error, value) => {
 			let { approver ,copyPerson , enclosure} = this.state;
@@ -216,7 +228,7 @@ class AddtenderingForm extends Component {
 				fileTypeImgArr = ['ppt.png','ppt.png','excel.png','excel.png','word.png','word.png'];
 			let i = ['ppt','pptx','xls','xlsx','doc','docx'].indexOf(v.fileType);
 			i != -1 ? fileTypeImg = fileTypeImgArr[i] : fileTypeImg = 'unknown.png';
-			return <div className="file">
+			return <div className="file" onClick={() => this.previewFile('previewFile',v)}>
 						<img className="fileIcon" src={`${IMGCOMMONURI}${fileTypeImg}`} />
 						<p className="textOverflow_1">{v.fileName}</p>
 						<div className="closeBtn" onClick={() => this.delFile(v.fileId)}>

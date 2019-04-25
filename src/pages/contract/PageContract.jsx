@@ -14,7 +14,6 @@ import {
 import {
     Link
 } from 'react-keeper';
-// import SearchBarMine from '../../components/searchBar/searchbar';
 import mydingready from './../../dings/mydingready';
 const { AUTH_URL , IMGCOMMONURI } = require(`config/develop.json`);
 
@@ -25,15 +24,7 @@ const Item = List.Item;
 class Contract extends Component {
     constructor(props) { 
         super(props, logic);        
-        dd.ready(()=>{
-        	dd.biz.navigation.setTitle({ 
-        		title:'合同' ,
-        		onSuccess: res => {
-        		},
-        		onFail: res => {
-        		}
-        	});
-        })
+        
     }
 
     render() {

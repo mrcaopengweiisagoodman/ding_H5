@@ -53,7 +53,7 @@ class DingReadyMine {
 				});
 		    }
 		})
-	};
+	}
 	/*
 	* 获取用户名称、部门信息
 	* @param userId
@@ -98,7 +98,7 @@ class DingReadyMine {
 				onFail: res => {
 				}
 			});
-			if (ddApiState == 'approver' || ddApiState == 'copyPerson') {
+			if (ddApiState == 'approver' || ddApiState == 'copyPerson' || ddApiState == 'userIds') {
 				stateStr = ddApiState;
 				ddApiState = 'lianxiren';
 			}
@@ -123,11 +123,11 @@ class DingReadyMine {
 						responseUserOnly: true,        //返回人，或者返回人和部门
 						startWithDepartmentId:0 ,   //仅支持0和-1
 						onSuccess: function(result) {
-							dd.device.notification.alert({
+							/*dd.device.notification.alert({
 								message: "DD 联系人啊成功了 : " + JSON.stringify(result),
 								title: "Huooo",
 								buttonName: "OK"
-							});
+							});*/
 							if (stateStr == 'approver') {
 								setFn({
 									approver: JSON.parse(JSON.stringify(result)).users
@@ -136,16 +136,24 @@ class DingReadyMine {
 								setFn({
 									copyPerson: JSON.parse(JSON.stringify(result)).users
 								})
+							} else if (stateStr == 'userIds') {
+								let { messageBoard , emplIds} = context.state,
+									userIds = JSON.parse(JSON.stringify(result)).users;
+								
+								for (let el of userIds) {
+					                messageBoard.push(el.name);
+					                emplIds.push(el.emplId);
+					            }
+								context.props.form.setFieldsValue({
+								    content: '@' + [...new Set(messageBoard)].join('@'),
+								});
+								setFn({
+									userIds: JSON.parse(JSON.stringify(result)).users,
+									messageBoard: [...new Set(messageBoard)],
+									emplIds: [...new Set(emplIds)],
+									isChooseContact: otherData.isChooseContact
+								});
 							}
-							// 把获取到的数据返回
-							// {"users":[{"name":"田帅","avatar":"","emplId":"0125056400954069"},{"name":"曹鹏伟","avatar":"","emplId":"042827545726609513"}],"departments":[{"id":111712572,"name":"部门1","number":1},{"id":111012582,"name":"＆","number":1}],"selectedCount":4}
-							//
-							//{
-							//    selectedCount:1,                              //选择人数
-						   //     users:[{"name":"","avatar":"","emplId":""}]，//返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），emplId（用户工号）三个字段
-							//    departments:[{"id":,"name":"","number":}]//返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数）
-							// }
-							//
 						},
 						onFail : function(err) {
 							dd.device.notification.alert({
@@ -192,7 +200,6 @@ class DingReadyMine {
 					    	if (result.data.length) {
 					    		setFn({enclosure: enclosure});
 					    	}
-					    	
 					    },
 					   	onFail : function(err) {
 					   		dd.device.notification.alert({
@@ -202,6 +209,27 @@ class DingReadyMine {
 							});
 					   	}
 					});
+				},
+				// 预览钉盘文件
+				previewFile: () => {
+					dd.biz.cspace.preview({
+			            corpId: CORP_ID,
+			            spaceId: otherData.spaceId,
+			            fileId: otherData.fileId,
+			            fileName: otherData.fileName,
+			            fileSize: otherData.fileSize,
+			            fileType: otherData.fileType,
+			            onSuccess: function(res) {
+			            },
+			            onFail: function(err) {
+			            	dd.device.notification.alert({
+					            message: "文件预览失败！---" + JSON.stringify(err),
+					            title: "温馨提示",
+					            buttonName: "确定"
+					        });
+			                // 无，直接在native页面显示具体的错误
+			            }
+			        });
 				}
 			}
 			ddJsApiHandle[ddApiState]();
