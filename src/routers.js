@@ -5,7 +5,11 @@ import { HashRouter, Route } from 'react-keeper'
 import PageHome from 'pages/home/';
 import PendingApproval from 'pages/pendingApproval/';
 import Audit from 'pages/audit/';
+import Auditapprove from 'pages/auditapprove/';
+import Auditcontract from 'pages/auditcontract/';
 import Contract from 'pages/contract/';
+import AddContract from 'pages/addcontract/';
+import Detailcontract from 'pages/detailcontract/';
 import Tendering from 'pages/tendering/';
 import AddTendering from 'pages/addtendering/';
 import Detailtendering from 'pages/detailtendering/';
@@ -16,7 +20,11 @@ const rootRoute =
 			<PageHome.route />
 			<PendingApproval.route />
 			<Audit.route />
+			<Auditapprove.route />
+			<Auditcontract.route />
 			<Contract.route />
+			<AddContract.route />
+			<Detailcontract.route />
 			<Tendering.route />
 			<AddTendering.route />
 			<Detailtendering.route />

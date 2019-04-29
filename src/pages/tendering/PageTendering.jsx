@@ -178,7 +178,7 @@ class Tendering extends Component {
 					</div>
 				</Tabs>
 				{/* 新增页面按钮 */}
-				<Link type='img' src={`${IMGCOMMONURI}add_big.png`} className='addTendering' to={ '/addtendering' } />
+				<Link type='img' src={`${IMGCOMMONURI}add_big.png`} className='addTenderingBtn' to={ '/addtendering' } />
             </div>
         );
     }

@@ -70,6 +70,7 @@ img{border:none;}
 .isFlex{display: flex;}
 	/* 字体大小 */
 @f_14: 1.4rem;
+.f_14{font-size: 1.4rem};
 @f_15: 1.5rem;
 	/* 字体颜色 */
 @c_red: red;
@@ -78,6 +79,9 @@ img{border:none;}
 .color_b {color: #2d87f7}
 .color_g {color: #15bc83}
 .color_gray {color: #78787a}
+.color_orange { color: #fd943f; }
+	/* 背景色 */
+.bg_ff{background: #FFFFFF;}
 .flex{
 	display: flex;
 	align-items: center;
@@ -95,9 +99,37 @@ img{border:none;}
 	align-items: center;
 	flex-wrap: wrap;
 }
+.flex_cc1{	
+	/* 使用方式 
+	在该选择器下直接写
+	.flex_cc */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	flex-direction: column;
+}
 .flex_bc () {	
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.flex_ec{	
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.flex_bc{	
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.flex_ac{	
+	display: flex;
+	justify-content: space-around;
 	align-items: center;
 	flex-wrap: wrap;
 }
@@ -105,6 +137,14 @@ img{border:none;}
 	/*width: 86.4vw;*/
 	width: 100%;
 	height: 2px;
+	margin: 0 auto;
+	background: rgba(25, 31, 37, 0.08);
+}
+
+.line_box {
+	/*width: 86.4vw;*/
+	width: 100%;
+	height: 1.4rem;
 	margin: 0 auto;
 	background: rgba(25, 31, 37, 0.08);
 }
