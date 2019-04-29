@@ -13,7 +13,7 @@ export default {
         	// 被@的联系人集合
         	userIds: [],
         	// 被@的联系人的id
-        	emplIds: [],
+            emplIds: [],
         	// 留言板信息
         	messageBoard: [],
         	// 是否已经选择@人

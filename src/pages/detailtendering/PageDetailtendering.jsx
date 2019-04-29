@@ -79,6 +79,13 @@ class DetailtenderingForm extends Component {
     */
     submit = () => {
         let { id,emplIds ,userIds} = this.state;
+
+        dd.device.notification.alert({
+            message: "userIds的值为---" + JSON.stringify(userIds),
+            title: "温馨提示",
+            buttonName: "确定"
+        });
+
         this.props.form.validateFields((error,value) => {
             console.log(value);
             if (!error) {
@@ -103,7 +110,7 @@ class DetailtenderingForm extends Component {
                                     content: value.content,
                                     redirectUrl: url,
                                     type: 1,
-                                    userIds: emplIds.join(',')
+                                    notified: emplIds.join(',')
                                }: params = {
                                     id: id,
                                     content: value.content,
@@ -182,7 +189,7 @@ class DetailtenderingForm extends Component {
                         </div>
             });
             return (
-               <div className="addTendering detailtendering">
+               <div className="addTendering">
                     <p className="title">基本信息</p>
                     <div className="name titleStr">
                         {detailData ? detailData.biddingName : ''}
@@ -233,8 +240,8 @@ class DetailtenderingForm extends Component {
                     </div>
                     {/* 留言板 --- 只有抄送人和审批人进行操作 */}
                     <div className={detailData.approvalState == 'REBUT' ? 'line_gray' : 'isHide'}></div>
-                    <div className={detailData.approvalState == 'REBUT' && administrators.indexOf(myUserId) != -1 ? 'selectedMan biddingName' : 'isHide'} style={{padding: '0 3vw'}}> 
-                    {/*<div className="biddingName selectedMan"> */}
+                    {/*<div className={detailData.approvalState == 'REBUT' && administrators.indexOf(myUserId) != -1 ? 'biddingName' : 'isHide'} style={{padding: '0 3vw'}}>*/} 
+                    <div className="biddingName"> 
                         <p className="title">留言板</p>
                         <TextareaItem 
                             className="textArea"
