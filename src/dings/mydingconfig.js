@@ -7,7 +7,7 @@ const { CORP_ID, AUTH_URL, APP_URL,CONFIG_APP_URL } = require(`config/develop.js
 class DingConfigMine {
 	getFn = () => {
 		$.ajax({
-			url: `http://192.168.3.219:8888/ding/sign?url=${CONFIG_APP_URL}?dd_nav_bgcolor=FF2D87F7`,
+			url: `${AUTH_URL}ding/sign?url=${CONFIG_APP_URL}?dd_nav_bgcolor=FF2D87F7`,
 			// url: `http://192.168.3.219:8888/ding/sign?url=http://192.168.3.219:8888/index.html?dd_nav_bgcolor=FF2D87F7`,
 			type:"GET",
 			dataType:'json',
@@ -64,7 +64,7 @@ class DingConfigMine {
 				localStorage.setItem('access_token',token)
 				
 				$.ajax({
-					url: `http://192.168.3.219:8888/ding/gain/ticket`,
+					url: `${AUTH_URL}ding/gain/ticket`,
 					type: 'GET',
 					success: res => {
 						// alert('get_jsapi_ticket正确',JSON.stringify(res))

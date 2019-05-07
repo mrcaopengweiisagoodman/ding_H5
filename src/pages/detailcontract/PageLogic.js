@@ -1,9 +1,12 @@
+import { apiSync } from 'utils'
 import PageConst from './PageConst';
 
 export default {
     defaults(props) {
         //初始的state
          return {  
+            ...PageConst,
+            id: '',
             detailData: null,
         	// 0:标准合同；1：非
         	contractType: 0,

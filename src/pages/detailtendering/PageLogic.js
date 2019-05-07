@@ -1,4 +1,5 @@
 import PageConst from './PageConst';
+import { apiSync } from 'utils'
 
 export default {
     defaults(props) {

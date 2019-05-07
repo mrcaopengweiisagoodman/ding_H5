@@ -25,9 +25,16 @@ class Auditcontract extends Component {
         mydingready.ddReady({pageTitle: '内审合同'});
         
     }
+    /**
+    * 发送自定义事件（设置state）
+    */
+    dispatchFn = (val) => {
+        this.dispatch('setStateData',val)
+    }
     checkedChange2 = (e,deptId) => {
         console.log(e)
         e.stopPropagation();
+        this.dispatchFn({});
     }
     /**
     * 批量导出文件

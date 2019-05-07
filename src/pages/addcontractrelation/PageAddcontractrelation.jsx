@@ -1,5 +1,5 @@
 // 添加合同
-require('./PageAddcontract.less');
+require('./PageAddcontractrelation.less');
 import logic from './PageLogic';
 import { Component, LogicRender } from 'refast';  
 import {
@@ -9,15 +9,24 @@ import {
     DatePicker,
     List 
 } from 'antd-mobile';
+import {
+    Link
+} from 'react-keeper';
 import { createForm } from 'rc-form';
 import mydingready from './../../dings/mydingready';
 const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
 
-class AddcontractForm extends Component {
+class AddcontractrelationForm extends Component {
     constructor(props) { 
         super(props, logic);        
-        mydingready.ddReady({pageTitle: '添加合同'});
-        
+        mydingready.ddReady({pageTitle: '关联合同审批'});
+    }
+    componentDidMount () {
+        this.dispatchFn({
+        	pid: this.props.params.pid,
+        	pTitle: decodeURI(this.props.params.pTitle)
+        });
+
     }
     /**
     * 发送自定义事件（设置state）
@@ -174,7 +183,7 @@ class AddcontractForm extends Component {
             console.log('表单值---',value)
             let originatorId = localStorage.getItem('userId'),
                 originatorName = localStorage.getItem('userName');
-            let { contractType, eventType ,approver ,payTime,reminderTime , enclosure,paymentSettings} = this.state;
+            let { pid,contractType, eventType ,approver ,payTime,reminderTime , enclosure,paymentSettings} = this.state;
             if (!approver || !enclosure || error) {
                 dd.device.notification.alert({
                     message: "您有未填写项！",
@@ -233,29 +242,30 @@ class AddcontractForm extends Component {
                     showIcon: true, //是否显示icon，默认true
                 })
                 let url = encodeURI(`${AUTH_URL}#/detailcontract/`),
-                    params = {
-                    contractType: contractType,
-                    deptId: dept.deptId,
-                    deptName: dept.deptName,
-                    title: value.title,
-                    partyName: value.partyName,
-                    eventType: eventType,
-                    paymentSettings: paymentSettings,
-                    amount: Number(value.amount),
-                    leaseTerm: value.leaseTerm,
-                    enclosure: enclosure,
-                    content: value.content,
-                    approver: approver,
-                    originatorId: originatorId,
-                    originatorName: originatorName,
-                    redirectUrl: url
-                }
+	            	params = {
+	                    contractType: contractType,
+	                    deptId: dept.deptId,
+	                    deptName: dept.deptName,
+	                    title: value.title,
+	                    partyName: value.partyName,
+	                    eventType: eventType,
+	                    paymentSettings: paymentSettings,
+	                    amount: Number(value.amount),
+	                    leaseTerm: value.leaseTerm,
+	                    enclosure: enclosure,
+	                    content: value.content,
+	                    approver: approver,
+	                    originatorId: originatorId,
+	                    originatorName: originatorName,
+	                    pid: pid,
+	                    redirectUrl: url
+	                };
 
-              /*  dd.device.notification.alert({
+                dd.device.notification.alert({
                     message: JSON.stringify(params),
                     title: '新增合同参数',
                     buttonName: "确定"
-                });*/
+                });
 
 
 
@@ -294,7 +304,7 @@ class AddcontractForm extends Component {
     }
     render() {
         let dept = JSON.parse(localStorage.getItem('dept'));
-        const { contractType ,eventType ,approver ,enclosure ,addMoneyList,payTime,reminderTime,paymentSettings} = this.state;
+        const {pid ,pTitle,contractType ,eventType ,approver ,enclosure ,addMoneyList,payTime,reminderTime,paymentSettings} = this.state;
         const { getFieldProps } = this.props.form;
         let approverCom = approver.map(v=>{
             return <div key={v.emplId} style={{margin: '5px 1.5vw'}}>
@@ -371,6 +381,10 @@ class AddcontractForm extends Component {
         })
         return (
             <div className="addcontract">
+         		<Link to={`/detailcontract/${pid}`} className="listHeight flex">
+                    <span className="leftText f_14 color_gray">关联合同</span>
+                    <div className="f_14">{pTitle}</div>
+                </Link>
                 <p className="title">合同类型</p>
                 <div className="listHeight flex">
                     <div className="checkeBox flex">
@@ -519,5 +533,5 @@ class AddcontractForm extends Component {
     }
 
 }
-const Addcontract = createForm()(AddcontractForm);
-export default Addcontract ;
+const Addcontractrelation = createForm()(AddcontractrelationForm);
+export default Addcontractrelation ;

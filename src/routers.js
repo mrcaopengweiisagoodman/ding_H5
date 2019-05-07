@@ -9,6 +9,7 @@ import Auditapprove from 'pages/auditapprove/';
 import Auditcontract from 'pages/auditcontract/';
 import Contract from 'pages/contract/';
 import AddContract from 'pages/addcontract/';
+import AddContractRelation from 'pages/addcontractrelation/';
 import Detailcontract from 'pages/detailcontract/';
 import Tendering from 'pages/tendering/';
 import AddTendering from 'pages/addtendering/';
@@ -24,6 +25,7 @@ const rootRoute =
 			<Auditcontract.route />
 			<Contract.route />
 			<AddContract.route />
+			<AddContractRelation.route />
 			<Detailcontract.route />
 			<Tendering.route />
 			<AddTendering.route />
