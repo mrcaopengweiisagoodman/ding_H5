@@ -77,11 +77,14 @@ img{border:none;}
 @c_fff: #FFFFFF;
 .color_r {color: #f05642}
 .color_b {color: #2d87f7}
+.color_b2 {color: #28a2ff}
 .color_g {color: #15bc83}
 .color_gray {color: #78787a}
+.color_gray2 {color: #c5c4ca}
 .color_orange { color: #fd943f; }
 	/* 背景色 */
 .bg_ff{background: #FFFFFF;}
+.bg_gray{background: #f6f6f6;}
 .flex{
 	display: flex;
 	align-items: center;
@@ -205,4 +208,31 @@ img{border:none;}
 	background: #2d87f7;
 	border-radius: 6px;
 	border: none;
+}
+/* 搜索框样式修改 */
+.searchBox{
+	box-sizing: border-box;
+	background: #ffffff;
+	/* 顶部title */
+	.am-search-input{
+		max-width: 100%;
+		background: #dde1e4;
+		box-sizing: border-box;
+		.am-search-synthetic-ph{
+			margin-left: 1rem;
+			text-align: left;
+			.am-search-synthetic-ph-placeholder{
+				opacity: 1;
+			}
+		}
+		/* 搜索input */
+		.am-search-value{
+			padding-left: 4.4rem!important;
+			color: #333333;
+		}
+	}
+	/* 取消按钮 */
+	.am-search-cancel{
+		display: none;
+	}
 }

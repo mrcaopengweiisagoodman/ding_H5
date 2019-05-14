@@ -27,9 +27,9 @@ class Tendering extends Component {
     constructor(props) { 
         super(props, logic);    
 		mydingready.ddReady({pageTitle: '招投标'});
-		this.getTenderingList({state: 'CHECKING'});
     }
 	componentDidMount () {
+		this.getTenderingList({state: 'CHECKING'});
 
 		// this.autoFocusInst.focus();
 	}

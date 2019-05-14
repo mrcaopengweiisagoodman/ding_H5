@@ -144,7 +144,7 @@ class AddtenderingForm extends Component {
 				})
 				let originatorName = localStorage.getItem('userName'),
 					originatorId = localStorage.getItem('userId'),
-					url = encodeURI(`${AUTH_URL}#/detailtendering`);
+					url = encodeURI(`${AUTH_URL}#/detailtendering/`);
 				fetch(`${AUTH_URL}bidding/create`,{
 					method: 'POST',
 					headers: {

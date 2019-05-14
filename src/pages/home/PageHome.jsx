@@ -34,7 +34,7 @@ class Home extends Component {
             <div className="home">
 			{/* <div onClick={this.contacts} style={{height: "100px"}}>选择内部联系人</div> */}
 
-				<Link className="navList approvalNav" to="/pageApproval">
+				<Link className="navList approvalNav" to="/waitingapproval">
 					{/* 正式环境图片的路径 */}
 					<img src={`${IMGCOMMONURI}dsp.png`} />
 					<p>待我审批</p>

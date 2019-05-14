@@ -1,14 +1,17 @@
 import PageConst from './PageConst';
-import { apiSync } from 'utils';
+import { apiSync } from 'utils'
 
 export default {
     defaults(props) {
         //初始的state
         return {  
-        	// 获取到的部门信息
+        	deptId: '',
+        	searchVal: '',
+        	startTime: '',
+        	endTime: '',
         	listData: [],
-        	// 选取的部门id
-        	deptIds: []
+        	// 选择时间框是否显示
+        	isTimeBox: false
         }
     },
      /**
@@ -18,6 +21,6 @@ export default {
 	 */
 	setStateData (ctx,val) {
 		ctx.setState(val);
-	},
+	}
 
 };

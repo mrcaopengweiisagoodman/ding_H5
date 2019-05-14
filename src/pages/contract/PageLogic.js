@@ -1,6 +1,6 @@
 // React状态的逻辑处理
 import PageConst from './PageConst';
-import { apiSync } from 'utils'
+import { apiSync } from 'utils';
 
 export default {
     defaults(props) {

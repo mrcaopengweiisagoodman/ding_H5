@@ -125,7 +125,7 @@ class Contract extends Component {
                     onTabClick={(tab, index) => this.getContract(tab.state)}
                 >
                     <div className="standard">
-                        <div className="listBox">
+                       {/* <div className="listBox">
                             <Link to={`/detailcontract/5`}>
                                 <div className="list">
                                     <div className="tenderingTitle flex">
@@ -156,7 +156,7 @@ class Contract extends Component {
                                 </div>
                             </Link>
                             <div className="box_b color_b" onClick={(e) => {this.goRelation(e,30,'父合同标题')}}>关联合同审批</div>
-                        </div>
+                        </div>*/}
                         {listCom}
                     </div>
                     <div className="no_standard">

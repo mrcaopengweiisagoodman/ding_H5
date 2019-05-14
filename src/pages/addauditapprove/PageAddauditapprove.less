@@ -1,0 +1,123 @@
+@import './../../assets/css/reset.less';
+.addauditapprove{
+	min-height: 100vh;
+	background: #FFFFFF;
+	.title{
+		line-height: 4rem;
+		padding-left: 3vw;
+		font-size: 1.3rem;
+		color: rgba(25, 31, 37, 0.4);
+		background: #f6f6f6;
+	}
+	.name{
+		padding: 1rem 3vw;
+		.nameTitle{
+			line-height: 2rem;
+			font-size: 1.7rem;
+			color: rgba(25, 31, 37, 0.28);
+		}
+		textarea{
+			width: 96vw;
+		}
+		.fileBox{
+			.flex_cc();
+		}
+	}
+	
+	.fileBox{
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		background: rgba(246,246,246,.5);
+		.file{
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 30vw;
+			height: 30vw;
+			margin: 10px 1.5vw;
+			.fileIcon{
+				width: 5.2rem;
+				height: 6.2rem;
+				margin-bottom: .5rem;
+			}
+			.selectedBtn{
+				width: 6.2rem;
+				height: 6.2rem;
+			}
+			p{
+				height: 1.5rem;
+				line-height: 1.5rem;
+				font-size: 1.4rem;
+				color: #333;
+			}
+			.closeBtn{
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 0 0 10px 10px;
+				img{
+					width: 1.4rem;
+					height: 1.4rem;
+				}
+			}
+		}
+	}
+	.selectedMan{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.5vh 3vw;
+		color: #191f25;
+		p{
+			font-size: 1.4rem;
+		}
+		.manArr{
+			display: flex;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+			width: 70vw;
+			min-height: 4.2rem;
+			margin: 0 2vw;
+			.manBox{
+				position: relative;
+				img{
+					position: absolute;
+					top: -.75rem;
+					right: -.75rem;
+					width: 1.5rem;
+					height: 1.5rem;
+				}
+			}
+		}
+		.detailManArr{
+			width: 74vw;
+			line-height: 2.7rem;
+			font-size: 1.4rem;
+		}
+		.selectedBtn{
+			width: 2.2rem;
+			height: 2.2rem;
+		}
+	}
+	.lineTime{
+		padding: 1.5vh 3vw;
+	}
+
+	/* 边线颜色
+	rgba(25, 31, 37, 0.08)
+	*/
+	.goContacts{
+		width: 100px;
+		height: 100px;
+		background: purple;
+		color: #ffffff;
+	}
+	.am-list-item{
+		padding-left: 0;
+		font-size: 1.7rem;
+		color: rgba(25, 31, 37, 0.28);
+	}
+}

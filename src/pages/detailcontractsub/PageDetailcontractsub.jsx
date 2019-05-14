@@ -1,5 +1,5 @@
 // 合同详情
-require('./PageDetailcontract.less');
+require('./PageDetailcontractsub.less');
 import logic from './PageLogic';
 import { Component, LogicRender } from 'refast';  
 import {
@@ -22,7 +22,7 @@ const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
 class DetailcontractForm extends Component {
     constructor(props) { 
         super(props, logic);        
-        mydingready.ddReady({pageTitle: '合同详情'});
+        mydingready.ddReady({pageTitle: '关联合同详情'});
         this.getDetail(props.params.id);   
     }
     /**
@@ -162,12 +162,6 @@ class DetailcontractForm extends Component {
             }
         });
     }  
-    /**
-    * 去往搜索关联合同页面
-    */
-    goSearch = () => {
-        Control.go(`/contractsearch/contract`);
-    }
     render() {
         let administrators = [],
             myUserId = localStorage.getItem('userId');
@@ -239,8 +233,16 @@ class DetailcontractForm extends Component {
                         </div>
             });
             let childIds = detailData.cids ? detailData.cids.split(',') : [];
+            /*let childNamesCom = detailData.childNames.map((v,i) => {
+                return  <div className="listHeight flex_bc" onClick={() => this.goDetailContract(`${childIds[i]}`)}>
+                            <span className="leftName textOverflow_1">{v}</span>
+                            <div className="flex_ec paySelect">
+                                <img className="fileIcon" src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
+                            </div>
+                        </div>
+            })*/
             let childNamesCom = detailData.childNames.map((v,i) => {
-                return  <Link to={`/detailcontractsub/${childIds[i]}`} className="listHeight flex_bc">
+                return  <Link to={`/detailcontract/${childIds[i]}`} className="listHeight flex_bc">
                             <span className="leftName textOverflow_1">{v}</span>
                             <div className="flex_ec paySelect">
                                 <img className="fileIcon" src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
@@ -309,7 +311,7 @@ class DetailcontractForm extends Component {
                     </div>
                     <p className="title">合同主要内容或说明(选填)</p>
                     <p className="textBox">{detailData.content}</p>
-                    <p className={detailData.childNames.length ? 'title' : 'isHide'}>关联合同</p>
+                    <p className="title">关联合同</p>
                     {/* 有关联合同时 */}
                     {childNamesCom}
                     <div className={detailData.childNames.length ? '' : 'isHide'}>
@@ -322,9 +324,11 @@ class DetailcontractForm extends Component {
                     </div>
                     {/* 没有有关联合同时，去查找合同以关联 */}
                     <div className={detailData.childNames.length ? '' : 'isHide'}>
-                        <SearchBar className="searchBox" placeholder="查找相关合同" 
+                        <SearchBar className="searchBox" placeholder="审批人/投标名称" 
                             value={searchVal}
-                            onFocus={this.goSearch}
+                            onSubmit={this.goSearch} 
+                            onBlur={this.searchBlur}
+                            onChange={this.searchChange}
                         /> 
                     </div>
                     <div className="line_box"></div>

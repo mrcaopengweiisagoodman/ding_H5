@@ -1,5 +1,5 @@
 // 合同详情
-require('./PageDetailcontract.less');
+require('./PageDetailauditapprove.less');
 import logic from './PageLogic';
 import { Component, LogicRender } from 'refast';  
 import {
@@ -22,8 +22,10 @@ const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
 class DetailcontractForm extends Component {
     constructor(props) { 
         super(props, logic);        
-        mydingready.ddReady({pageTitle: '合同详情'});
-        this.getDetail(props.params.id);   
+        mydingready.ddReady({pageTitle: '内审详情'});
+    }
+    componentDidMount () {
+        this.getDetail(this.props.params.id);   
     }
     /**
     * 发送自定义事件（设置state）
@@ -35,7 +37,7 @@ class DetailcontractForm extends Component {
     * 获取详情
     */
     getDetail = (id) => {
-        fetch(`${AUTH_URL}contract/info/${id}`)
+        fetch(`${AUTH_URL}internal/audit/info/${id}`)
         .then(res => res.json())
         .then(data => {
             /*dd.device.notification.alert({
@@ -46,7 +48,7 @@ class DetailcontractForm extends Component {
             if (data.state == 'SUCCESS') {
                 this.dispatchFn({
                     id: id,
-                    detailData: data.values.contract
+                    detailData: data.values.info
                 })
             }
         })
@@ -120,13 +122,13 @@ class DetailcontractForm extends Component {
                                     id: id,
                                     content: value.content,
                                     redirectUrl: url,
-                                    type: 1,
+                                    type: 3,
                                     notified: emplIds.join(',')
                                }: params = {
                                     id: id,
                                     content: value.content,
                                     redirectUrl: url,
-                                    type: 1,
+                                    type: 3,
                                };
 
                 fetch(`${AUTH_URL}bidding/leave/message`,{
@@ -166,7 +168,7 @@ class DetailcontractForm extends Component {
     * 去往搜索关联合同页面
     */
     goSearch = () => {
-        Control.go(`/contractsearch/contract`);
+        Control.go(`/contractsearch/audit`);
     }
     render() {
         let administrators = [],
@@ -182,29 +184,7 @@ class DetailcontractForm extends Component {
         // 测试数据结束
 
         if (detailData) {
-            // 测试数据
-            let paymentSettingsCom = JSON.parse(detailData.paymentSettings).map(v => {
-                if (detailData.eventType == 0) return;
-                return  <div>  
-                            <div className='listHeight flex'>
-                                <span className="leftText f_14 color_gray">{detailData.eventType == 1 ? '收款时间' : '付款时间'}</span>
-                                <div>{moment(v.payTime).format('YYYY.MM.DD HH:mm')}</div>
-                            </div>
-                            <div className="line_gray"></div>
-                            <div className="listHeight flex">
-                                <span className="leftText f_14 color_gray">{detailData.eventType == 1 ? '收款条件' : '付款条件'}</span>
-                                <div className="maxW">{v.payCondition}</div>
-                            </div>
-                            <div className="line_gray"></div>
-                            <div className="listHeight flex">
-                                <span className="leftText f_14 color_gray">提醒时间</span>
-                                <div>{moment(v.reminderTime).format('YYYY.MM.DD HH:mm')}</div>
-                            </div>
-                            <div className="line_box"></div>
-                        </div>
-
-            })
-           /* let a = [
+          /*  let a = [
                  {
                    spaceId: "232323",
                    fileId: "DzzzzzzNqZY",
@@ -230,111 +210,20 @@ class DetailcontractForm extends Component {
                             <p className="textOverflow_1">{v.fileName}</p>
                         </div>
             });
-            let approverCom = JSON.parse(detailData.approver).map(v=>{
-                administrators.push(v.emplId);
-                return <div key={v.emplId} style={{margin: '5px 1.5vw'}}>
-                            <div className="box_b manBox">
-                                <p className="color_b">{v.name}</p>
-                            </div>
-                        </div>
-            });
-            let childIds = detailData.cids ? detailData.cids.split(',') : [];
-            let childNamesCom = detailData.childNames.map((v,i) => {
-                return  <Link to={`/detailcontractsub/${childIds[i]}`} className="listHeight flex_bc">
-                            <span className="leftName textOverflow_1">{v}</span>
-                            <div className="flex_ec paySelect">
-                                <img className="fileIcon" src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
-                            </div>
-                        </Link>
-            })
+        
             return (
                 <div className="addcontract detailcontract">
-                    <p className="title">合同类型</p>
-                    <div className="listHeight flex">
-                        <div className="checkeBox flex">
-                            <Checkbox className="checkeList" checked={detailData.contractType == 0} />
-                            <span className="f_14 color_gray">标准化</span>
-                        </div>
-                        <div className="checkeBox flex">
-                            <Checkbox className="checkeList" checked={detailData.contractType == 1} />
-                            <span>非标准化</span>
-                        </div>
-                    </div>
-                    <p className="title">基本信息</p>
-                    <div className="listHeight flex">
-                        <span className="leftText f_14 color_gray">部门</span>
-                        <div>{detailData.deptName}</div>
-                    </div>
                     <div className="name flex" style={{padding: '0 3vw'}}>
                         <span className="f_14 color_gray leftText">标题</span>
                         <p className="maxW">{detailData.title}</p>
                     </div>
                     <div className="line_gray"></div>
-                    <div className="listHeight flex">
-                        <span className="leftText f_14 color_gray">当事人</span>
-                        <div>{detailData.partyName}</div>
-                    </div>
-                    <div className="line_gray"></div>
-                    <div className={detailData.eventType ? 'name flex' : 'isHide'} style={{padding: '0 3vw'}}>
-                        <span className="leftText f_14 color_gray">类型</span>
-                        <p className="maxW">{detailData.eventType == 1 ? '收款' : '付款' }</p>
-                    </div>
-                    <p className={detailData.eventType ? 'title' : 'isHide'}>款项信息</p>
-                    {paymentSettingsCom}
-                    {/* 收款、付款时间 */}
-                   {/* <div className={detailData.eventType ? '' : 'isHide'}>  
-                                           <div className="line_gray"></div>
-                                           <div className="listHeight flex">
-                                               <span className="leftText f_14 color_gray">收款条件</span>
-                                               <div className="maxW">这里是收款条件这里是收款条件这里是收款条件</div>
-                                           </div>
-                                           <div className="line_gray"></div>
-                                           <div className="listHeight flex">
-                                               <span className="leftText f_14 color_gray">提醒时间</span>
-                                               <div>2019-09-09</div>
-                                           </div>
-                                           <div className="line_box"></div>
-                                       </div>*/}
-                    <div className="listHeight flex">
-                        <span className="leftText f_14 color_gray">合同金额</span>
-                        <div className="color_orange">￥{detailData.amount}</div>
-                    </div>
-                    <div className="listHeight flex">
-                        <span className="leftText f_14 color_gray">租期</span>
-                        <div>{detailData.leaseTerm}天</div>
-                    </div>
+                    <p className="title">内审主要内容或说明(选填)</p>
+                    <p className="textBox">{detailData.content}</p>
                     <p className="title">相关附件</p>
                     <div className="fileBox">
                         {enclosureCom}
                     </div>
-                    <p className="title">合同主要内容或说明(选填)</p>
-                    <p className="textBox">{detailData.content}</p>
-                    <p className={detailData.childNames.length ? 'title' : 'isHide'}>关联合同</p>
-                    {/* 有关联合同时 */}
-                    {childNamesCom}
-                    <div className={detailData.childNames.length ? '' : 'isHide'}>
-                        {/*<div className="listHeight flex_bc">
-                                                    <span className="leftName textOverflow_1">江干区市民中心顶部合同防水工程采购合同呀呀呀呀呀</span>
-                                                    <div className="flex_ec paySelect" onClick={() => this.goDetailContract(30)}>
-                                                        <img className="fileIcon" src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
-                                                    </div>
-                                                </div>*/}
-                    </div>
-                    {/* 没有有关联合同时，去查找合同以关联 */}
-                    <div className={detailData.childNames.length ? '' : 'isHide'}>
-                        <SearchBar className="searchBox" placeholder="查找相关合同" 
-                            value={searchVal}
-                            onFocus={this.goSearch}
-                        /> 
-                    </div>
-                    <div className="line_box"></div>
-                    <div className="selectedMan bg_ff">
-                        <p className="color_gray">审批人</p>
-                        <div className="manArr detailManArr">
-                            {approverCom}
-                        </div>
-                    </div>
-                    <div className="line_gray"></div>
                     <div className="listHeight flex">
                         <span className="leftText f_14 color_gray">提交时间</span>
                         <div>{moment(detailData.createTime).format('YYYY.MM.DD HH:mm')}</div>
@@ -346,8 +235,13 @@ class DetailcontractForm extends Component {
                             <span className={detailData.approvalState ? styleInfo[detailData.approvalState].color : ''}>{styleInfo[detailData.approvalState].str}</span>
                         </div>
                     </div>
+                    <div className="line_gray"></div>
+                    <div className={detailData.approvalState == 'REBUT' ? "listHeight flex" : 'isHide'}>
+                        <span className="leftText f_14 color_gray">驳回原因</span>
+                        <div>{detailData.reason}</div>
+                    </div>
                        {/* 留言板 --- 只有抄送人和审批人进行操作 */}
-                    <div className={detailData.approvalState == 'REBUT' ? 'line_gray' : 'isHide'}></div>
+                    <div className={detailData.approvalState == 'REBUT'? 'line_gray' : 'isHide'}></div>
                     <div className={detailData.approvalState == 'REBUT' && administrators.indexOf(myUserId) != -1 ? 'biddingName' : 'isHide'} style={{padding: '0 3vw'}}>
                     {/*<div className="biddingName"> */}
                         <p className="title">留言板</p>

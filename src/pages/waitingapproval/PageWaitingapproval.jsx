@@ -1,4 +1,4 @@
-require('./PageAuditapprove.less');
+require('./PageWaitingapproval.less');
 import logic from './PageLogic';
 import { Component, LogicRender } from 'refast';  
 import moment from 'moment';
@@ -20,10 +20,10 @@ import testJson from './../../test_json/contract';
 const { AUTH_URL , IMGCOMMONURI } = require(`config/develop.json`);
 
 
-class Auditapprove extends Component {
+class Waitingapproval extends Component {
     constructor(props) { 
         super(props, logic);        
-        mydingready.ddReady({pageTitle: '内审审批'});
+        mydingready.ddReady({pageTitle: '待我审批'});
     }
     componentDidMount () {
         this.getTenderingList({state: 'CHECKING'});
@@ -36,7 +36,8 @@ class Auditapprove extends Component {
         this.dispatch('setStateData',val)
     }
     /**
-    * 获取内审审批列表
+    * 获取审批列表
+    * 接口路径 /summary/
     */
     getTenderingList = ({state ,searchWord }) => {
         let userId = mydingready.globalData.userId ? mydingready.globalData.userId 
@@ -200,4 +201,4 @@ class Auditapprove extends Component {
 
 }
 
-export default Auditapprove ;
+export default Waitingapproval ;

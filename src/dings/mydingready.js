@@ -114,7 +114,7 @@ class DingReadyMine {
 				// 选择联系人
 				lianxiren: () => {
 					dd.biz.contact.complexPicker({
-						title:"测试标题",            //标题
+						title:"选取联系人或者部门",            //标题
 						corpId: CORP_ID,              //企业的corpId
 						appId: AGENTID,             //企业的corpId
 						multiple:true,            //是否多选
