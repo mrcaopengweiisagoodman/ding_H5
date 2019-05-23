@@ -131,7 +131,7 @@ class AddauditapproveForm extends Component {
     submit = () => {
         this.props.form.validateFields((error, value) => {
             let { approver ,copyPerson , enclosure} = this.state;
-            if (!approver || !enclosure || error) {
+            if (!approver.length || !enclosure.length || error) {
                 dd.device.notification.alert({
                     message: "您有未填写项！",
                     title: "温馨提示",
@@ -154,7 +154,7 @@ class AddauditapproveForm extends Component {
                 })*/
                 let originatorName = localStorage.getItem('userName'),
                     originatorId = localStorage.getItem('userId'),
-                    url = encodeURI(`${AUTH_URL}#/detailauditapprove/`);
+                    url = encodeURIComponent(`${AUTH_URL}#/detailauditapprove/`);
                 fetch(`${AUTH_URL}internal/audit/approval/create`,{
                     method: 'POST',
                     headers: {

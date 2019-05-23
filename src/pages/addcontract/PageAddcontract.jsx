@@ -175,7 +175,7 @@ class AddcontractForm extends Component {
             let originatorId = localStorage.getItem('userId'),
                 originatorName = localStorage.getItem('userName');
             let { contractType, eventType ,approver ,payTime,reminderTime , enclosure,paymentSettings} = this.state;
-            if (!approver || !enclosure || error) {
+            if (!approver.length || !enclosure.length || error) {
                 dd.device.notification.alert({
                     message: "您有未填写项！",
                     title: "温馨提示",
@@ -232,7 +232,7 @@ class AddcontractForm extends Component {
                     text: "提交中...", //loading显示的字符，空表示不显示文字
                     showIcon: true, //是否显示icon，默认true
                 })
-                let url = encodeURI(`${AUTH_URL}#/detailcontract/`),
+                let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/`),
                     params = {
                     contractType: contractType,
                     deptId: dept.deptId,
@@ -371,7 +371,7 @@ class AddcontractForm extends Component {
         })
         return (
             <div className="addcontract">
-                <p className="title">合同类型</p>
+                {/*<p className="title">合同类型</p>
                 <div className="listHeight flex">
                     <div className="checkeBox flex">
                         <Checkbox className="checkeList" checked={!contractType} onChange={this.checkedChange} />
@@ -381,7 +381,7 @@ class AddcontractForm extends Component {
                         <Checkbox className="checkeList" checked={contractType} onChange={this.checkedChange} />
                         <span>非标准化</span>
                     </div>
-                </div>
+                </div>*/}
                 <p className="title">基本信息</p>
                 <div className="listHeight flex">
                     <span className="leftText f_14 color_gray">部门</span>
@@ -513,7 +513,6 @@ class AddcontractForm extends Component {
                     <img className="fileIcon selectedBtn" src={`${IMGCOMMONURI}add_small.png`} onClick={() => this.toDdJsApi('approver')} />
                 </div>
                 <button className="btnBlueLong" type="submit" onClick={this.submit}>提交</button>
-               
             </div>
         );
     }

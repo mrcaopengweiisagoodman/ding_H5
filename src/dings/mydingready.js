@@ -76,10 +76,11 @@ class DingReadyMine {
 	}
 	/**
 	* 需要鉴权的ddapi
-	* @param  context    上下文
-	* @param [String]   ddApiState 需要使用的ddapi
-	* @param [String]   pageTitle  当前页面的标题
-	* @param [Function] setFn      更改状态的函数
+	* @param             context     上下文
+	* @param            stateDataStr 需要更改的state的key值
+	* @param [String]   ddApiState   需要使用的ddapi
+	* @param [String]   pageTitle    当前页面的标题
+	* @param [Function] setFn        更改状态的函数
 	*                |-For Example
 	*        		 |-1、jsx
 					 |--- a、发送自定义事件：dispatchFn=(val)=>{this.dispatch('setStateData',{data_lianxiren: val})}
@@ -89,6 +90,7 @@ class DingReadyMine {
 	*/
 	ddReady = ({
 		context,
+		stateDataStr,
 		ddApiState,
 		pageTitle,
 		setFn,
@@ -96,6 +98,7 @@ class DingReadyMine {
 	}) => {
 		let _this = context,
 			stateStr,
+			isMultiple = true,
 			self = this;
 		dd.ready(function() {
 			dd.biz.navigation.setTitle({ 
@@ -117,7 +120,7 @@ class DingReadyMine {
 						title:"选取联系人或者部门",            //标题
 						corpId: CORP_ID,              //企业的corpId
 						appId: AGENTID,             //企业的corpId
-						multiple:true,            //是否多选
+						multiple: stateDataStr == 'beTransfer' ? false : true,            //是否多选
 						limitTips:"超出了",          //超过限定人数返回提示
 						maxUsers:1000,            //最大可选人数
 						pickedUsers:[],            //已选用户
@@ -130,6 +133,7 @@ class DingReadyMine {
 						responseUserOnly: true,        //返回人，或者返回人和部门
 						startWithDepartmentId:0 ,   //仅支持0和-1
 						onSuccess: function(result) {
+							let users = JSON.parse(JSON.stringify(result)).users;
 							/*dd.device.notification.alert({
 								message: "DD 联系人啊成功了 : " + JSON.stringify(result),
 								title: "Huooo",
@@ -137,15 +141,15 @@ class DingReadyMine {
 							});*/
 							if (stateStr == 'approver') {
 								setFn({
-									approver: JSON.parse(JSON.stringify(result)).users
+									approver: users
 								})
 							} else if (stateStr == 'copyPerson') {
 								setFn({
-									copyPerson: JSON.parse(JSON.stringify(result)).users
+									copyPerson: users
 								})
 							} else if (stateStr == 'userIds') {
 								let { messageBoard , emplIds} = context.state,
-									userIds = JSON.parse(JSON.stringify(result)).users;
+									userIds = users;
 								
 								for (let el of userIds) {
 					                messageBoard.push(el.name);
@@ -155,11 +159,17 @@ class DingReadyMine {
 								    content: '@' + [...new Set(messageBoard)].join('@'),
 								});
 								setFn({
-									userIds: JSON.parse(JSON.stringify(result)).users,
+									userIds: users,
 									messageBoard: [...new Set(messageBoard)],
 									emplIds: [...new Set(emplIds)],
 									isChooseContact: otherData.isChooseContact
 								});
+							} else {
+								// 转交时联系人为单选
+								setFn({
+									[stateDataStr]: users
+								});
+								context.conveyFn2(users[0]);
 							}
 						},
 						onFail : function(err) {
@@ -237,7 +247,7 @@ class DingReadyMine {
 			                // 无，直接在native页面显示具体的错误
 			            }
 			        });
-				}
+				},
 			}
 			ddJsApiHandle[ddApiState]();
 		})

@@ -19,6 +19,10 @@ import Tendering from 'pages/tendering/';
 import AddTendering from 'pages/addtendering/';
 import Detailtendering from 'pages/detailtendering/';
 import Deptcontractlists from 'pages/deptcontractlists/';
+import Rebutinfo from 'pages/rebutinfo/';
+import Apply from 'pages/apply/';
+import Addapply from 'pages/addapply/';
+import Detailapply from 'pages/detailapply/';
 
 const rootRoute =
     <HashRouter>
@@ -40,6 +44,10 @@ const rootRoute =
 			<AddTendering.route />
 			<Detailtendering.route />
 			<Deptcontractlists.route />
+			<Rebutinfo.route />
+			<Apply.route />
+			<Addapply.route />
+			<Detailapply.route />
 		</div>
     </HashRouter>;
 

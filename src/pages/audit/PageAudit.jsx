@@ -32,14 +32,12 @@ class Audit extends Component {
                     <div className="flex_cc1">
                         <img src={`${IMGCOMMONURI}nsht.png`} />
                         <p>内审合同</p>
-                        <span>12</span>
                     </div>
                 </Link>
                 <Link to={`/auditapprove`} className="box flex_cc1 nssp">
                     <div className="flex_cc1">
                         <img src={`${IMGCOMMONURI}nssp.png`} />
                         <p>内审审批</p>
-                        <span>12</span>
                     </div>
                 </Link>
             </div>

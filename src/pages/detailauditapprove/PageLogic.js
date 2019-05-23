@@ -20,6 +20,12 @@ export default {
             approver: [],
             // 上传文件之后返回的数据数组
             enclosure: [],
+            // 待审批入口进入的
+            checking_type: localStorage.getItem('checking_type'),
+            // 留言板信息是否已经提交
+            msgIsSubmit: false,
+            isRebut: localStorage.getItem('REBUT') == 'REBUT' ? true : false
+            
         }
     },
     /**

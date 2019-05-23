@@ -37,13 +37,13 @@ class Waitingapproval extends Component {
     }
     /**
     * 获取审批列表
-    * 接口路径 /summary/
+    * 接口路径 /summary/need_me_approval/
     */
     getTenderingList = ({state ,searchWord }) => {
         let userId = mydingready.globalData.userId ? mydingready.globalData.userId 
                                                    : localStorage.getItem('userId');
-        let url = searchWord ? `${AUTH_URL}internal/audit/gain/type?state=${state}&userId=${userId}&searchWord=${searchWord}&pageNum=1&pageSize=1000`
-                             : `${AUTH_URL}internal/audit/gain/type?state=${state}&userId=${userId}&pageNum=1&pageSize=1000`
+        let url = searchWord ? `${AUTH_URL}summary/need_me_approval?state=${state}&userId=${userId}&searchWord=${searchWord}&pageNum=1&pageSize=1000`
+                             : `${AUTH_URL}summary/need_me_approval?state=${state}&userId=${userId}&pageNum=1&pageSize=1000`
         fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -53,7 +53,7 @@ class Waitingapproval extends Component {
                 buttonName: "确定"
             });
             if (data.state == 'SUCCESS') {
-                this.dispatchFn({listData: data.values.biddings.list});
+                this.dispatchFn({listData: data.values.approvalList});
                 this.dispatchFn({
                     pageInfo: {
                         pageNum: 1,
@@ -75,51 +75,78 @@ class Waitingapproval extends Component {
 
         })
     }
+
     render() {
-        const { tabs , listData ,searchVal} = this.state;
-        let data1 = [{"name":"田ert帅","avatar":"","emplId":"0125056400964069"},{"name":"田帅2","avatar":"","emplId":"0121156400954069"}];
-        let approverCom = data1.map(v=>{
-        // let approverCom = approver.map(v=>{
-            return <div key={v.emplId}>
-                        <div className="box_b manBox">
-                            <div className="color_b">{v.name}</div>
-                        </div>
-                    </div>
-        });
+        let { tabs , listData ,searchVal ,textType} = this.state;
+       
         const tabNode = tabs.forEach( (v,inx) => {
             return <span>{v.title}</span>
-        })
+        });
+        /*listData = [{
+        	// contractId: 32,
+        	// innerAuditId: 9,
+        	biddingId: 77,
+			type: "合同",
+			title: '合同标题',
+			creatorName: '老大爷',
+			createTime: '2019-05-14T10:36:39'
+        }]*/
         let listCom = listData.map(v => {
-            return  <Link to={`/detailauditapprove/${v.innerAuditId}`} className="listBox">
-                        <div className="list">
-                            <div className="tenderingTitle flex">
-                                <span>标题</span>
-                                <p>{v.title}</p>
-                            </div>
-                        </div>
-                        <div className="line"></div>    
-                        <div className="list">
-                            <div className="tenderingTitle flex">
-                                <span>说明</span>
-                                <p>{v.content}</p>
-                            </div>
-                        </div>
-                        <div className="line"></div>    
-                        <div className="list">
-                            <div className="tenderingTitle flex">
-                                <span>审批人</span>
-                                <div className="manArr">
-                                    {approverCom}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="line"></div>    
-                        <div className="list">
-                            <div className="tenderingTitle flex">
-                                <span>提交时间</span>
-                                <p>{moment(v.createTime).format('YYYY.MM.DD HH:mm')}</p>
-                            </div>
-                        </div>
+            if (!v) return;
+        	let url, name, type, title;
+        	// 合同详情
+        	if (v.contractId) {
+				url = `/detailcontract/${v.contractId}`;
+                title = v.title;
+            }   
+            // 内审审批详情
+            if (v.innerAuditId) {
+                url = `/detailauditapprove/${v.innerAuditId}`;
+                title = v.title;
+            }
+            // 招投标详情
+            if (v.biddingId) {
+                url = `/detailtendering/${v.biddingId}`;
+                title = v.biddingName;
+        	}
+            if (v.windControlApplicationId) title = v.applyEvent;
+        	if (!v.creatorName || !v.originatorName || !v.originatorName) name = '未获取到创建人';
+            if (v.creatorName) name = v.createTime;
+            if (v.originatorName) name = v.originatorName;
+            return  <Link to={url}>
+            			<div className="listBox" onClick={()=>{localStorage.setItem('checking_type',v.type);localStorage.setItem('REBUT','REBUT');}}>
+	                       	<div className="list">
+	                            <div className="tenderingTitle flex">
+	                                <span>类型</span>
+	                                <p>{v.type}</p>
+	                            </div>
+	                        </div>
+	                        <div className="line"></div> 
+	                        <div className="list">
+	                            <div className="tenderingTitle flex">
+	                                <span>标题</span>
+	                                <p className='textOverflow_1'>{title}</p>
+	                            </div>
+	                        </div>
+	                        <div className="line"></div>    
+	                        <div className="list">
+	                            <div className="tenderingTitle flex">
+	                                <span>提交人</span>
+	                                <div className="manArr">
+	                                 	<div className="box_b manBox">
+				                            <div className="color_b textOverflow_1">{name}</div>
+				                        </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div className="line"></div>    
+	                        <div className="list">
+	                            <div className="tenderingTitle flex">
+	                                <span>提交时间</span>
+	                                <p>{moment(v.createTime).format('YYYY.MM.DD HH:mm')}</p>
+	                            </div>
+	                        </div>
+            			</div>
                     </Link>
                  
         })
@@ -137,38 +164,6 @@ class Waitingapproval extends Component {
                             onBlur={this.searchBlur}
                             onChange={this.searchChange}
                         /> 
-
-                        {/*<Link to={`/detailauditapprove/11`} className="listBox">
-                            <div className="list">
-                              <div className="tenderingTitle flex">
-                                  <span>标题</span>
-                                  <p>测试标题哦</p>
-                              </div>
-                            </div>
-                            <div className="line"></div>    
-                            <div className="list">
-                              <div className="tenderingTitle flex">
-                                  <span>说明</span>
-                                  <p>20天</p>
-                              </div>
-                            </div>
-                            <div className="line"></div>    
-                            <div className="list">
-                              <div className="tenderingTitle flex">
-                                  <span>审批人</span>
-                                  <div className="manArr">
-                                      {approverCom}
-                                  </div>
-                              </div>
-                            </div>
-                            <div className="line"></div>    
-                            <div className="list">
-                              <div className="tenderingTitle flex">
-                                  <span>提交时间</span>
-                                  <p>2019-0101-1</p>
-                              </div>
-                            </div>
-                        </Link>*/}
                         {listCom}
                     </div>
                     <div className="tabBody">
@@ -194,7 +189,6 @@ class Waitingapproval extends Component {
                         </div>
                     </div>
                 </Tabs>
-                <Link type='img' src={`${IMGCOMMONURI}add_big.png`} className='addTenderingBtn' to={ '/addauditapprove' } />
             </div>
         );
     }

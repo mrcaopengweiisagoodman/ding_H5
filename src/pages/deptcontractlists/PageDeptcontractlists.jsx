@@ -211,7 +211,7 @@ class DeptcontractlistsForm extends Component {
             	</div>
                 <div className="bottom">
                 	<div className="listBox">
-                        <Link to={`/detailcontract/5`}>
+                       {/* <Link to={`/detailcontract/5`}>
                             <div className="list">
                                 <div className="tenderingTitle flex">
                                     <span>当事人</span>
@@ -239,7 +239,7 @@ class DeptcontractlistsForm extends Component {
                                     <p>10000元</p>
                                 </div>
                             </div>
-                        </Link>
+                        </Link>*/}
                         <div className="box_b color_b" onClick={(e) => {this.goRelation(e,30,'父合同标题')}}>关联合同审批</div>
                 	</div>          
                 	{listCom}

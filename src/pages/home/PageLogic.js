@@ -20,7 +20,9 @@ export default {
 				agentId: '', // 必填，微应用ID
 				corpId: 0,//必填，企
 			},
-			approver: null
+			approver: null,
+			// 待我审批的文件数量
+			count: 0
         }
     },
 
@@ -38,6 +40,10 @@ export default {
 		key_[key] = val;
 		ctx.setState(key_);
 	},
+	setStateData2 (ctx,val) {
+   		ctx.setState(val);
+  	},
+
 	/**
 	 * 修改状态值来使用钉钉API
 	 */

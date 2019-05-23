@@ -116,19 +116,21 @@ class DetailcontractForm extends Component {
                     showIcon: true, //是否显示icon，默认true
                 })
                 var params , 
-                    url = encodeURI(`${AUTH_URL}#/detailtendering/${id}`);
+                    url = encodeURIComponent(`${AUTH_URL}#/detailtendering/${id}`);
                     userIds.join(',');
                 emplIds.length ? params = {
                                     id: id,
                                     content: value.content,
                                     redirectUrl: url,
                                     type: 3,
-                                    notified: emplIds.join(',')
+                                    notified: emplIds.join(','),
+                                    userId: localStorage.getItem('userId')
                                }: params = {
                                     id: id,
                                     content: value.content,
                                     redirectUrl: url,
                                     type: 3,
+                                    userId: localStorage.getItem('userId')
                                };
 
                 fetch(`${AUTH_URL}bidding/leave/message`,{
@@ -168,15 +170,112 @@ class DetailcontractForm extends Component {
     * 去往搜索关联合同页面
     */
     goSearch = () => {
-        Control.go(`/contractsearch/audit`);
+        Control.go(`/contractsearch/audit/${this.props.params.id}`);
+    }
+     /*
+    * 合同的操作（同意、驳回）
+    * @param reason 驳回原因
+    */ 
+    operationFn = (state,reason) => {
+        let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/${this.props.params.id}`),
+            type = 2,// 2是合同，3是内审
+            userId = localStorage.getItem('userId'),
+            params = `redirectUrl=${url}&stateEnum=${state}&type=${type}&userId=${userId}`;
+        fetch(`${AUTH_URL}bidding/approval/pass/${this.props.params.id}?${params}`,{
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            /*dd.device.notification.alert({
+                message: "合同详情数据" + JSON.stringify(data),
+                title: "提示",
+                buttonName: "确定"
+            })*/
+            if (data.state == 'SUCCESS') {
+                dd.device.notification.alert({
+                    message: "操作成功！",
+                    title: "提示",
+                    buttonName: "确定",
+                    onSuccess: () => {
+                        Control.go(-1);
+                        localStorage.removeItem('checking_type');
+                    }
+                })
+                return
+            }
+            dd.device.notification.alert({
+                message: data.info,
+                title: "提示",
+                buttonName: "确定",
+            })
+
+        })
+    }
+    /**
+    * 合同转交---1、获取联系人
+    */
+    conveyFn = () => {
+        mydingready.ddReady({
+            context: this,
+            setFn: this.dispatchFn,
+            ddApiState: 'lianxiren',
+            stateDataStr: 'beTransfer'
+        })
+    }
+    /**
+    * 合同转交---1、接口 
+    * @param beTransfer  转交者信息
+    */
+    conveyFn2 = (beTransfer) => {
+        // 测试数据开始
+       /* beTransfer = {
+            name: '曹鹏伟',
+            emplId: '042827545726609513'
+        }*/
+        // 测试数据结束
+
+        function checking_type () {
+            let type = localStorage.getItem('checking_type');
+            if (type == '招投标') { return 1; }
+            if (type == '合同') { return 2; }
+            if (type == '内审审批') { return 3; }
+        }
+        let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/${this.props.params.id}`),
+            userId = localStorage.getItem('userId'),
+            params = `beTransferId=${beTransfer.emplId}&beTransferName=${beTransfer.name}&redirectUrl=${url}&type=${checking_type()}&userId=${userId}`;
+        fetch(`${AUTH_URL}bidding/approval/transfer/${this.props.params.id}?${params}`,{
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.state == 'SUCCESS') {
+                dd.device.notification.alert({
+                    message: "已转交！",
+                    title: "提示",
+                    buttonName: "确定",
+                    onSuccess: () => {
+                        localStorage.removeItem('checking_type');
+                        Control.go(-1);
+                    }
+                })
+                return
+            }
+            dd.device.notification.alert({
+                message: data.info,
+                title: "温馨提示",
+                buttonName: "确定"
+            })
+        })
+    } 
+    componentWillUnmount () {
+        localStorage.removeItem('REBUT');
     }
     render() {
         let administrators = [],
             myUserId = localStorage.getItem('userId');
         const { getFieldProps } = this.props.form;
 
-        let { styleInfo,contractType ,eventType ,approver ,enclosure ,detailData,searchVal} = this.state;
-        console.log(contractJson)
+        let { styleInfo,contractType ,eventType ,approver ,enclosure ,detailData,searchVal,checking_type,isRebut} = this.state;
         
         // 测试数据开始
         // detailData = contractJson.detail.contract;
@@ -200,7 +299,7 @@ class DetailcontractForm extends Component {
                    fileType: "pdf"
                 }];
             let enclosureCom = a.map(v => {*/
-            let enclosureCom = enclosure.map(v => {
+            let enclosureCom = JSON.parse(detailData.enclosure).map(v => {
                 let fileTypeImg, 
                     fileTypeImgArr = ['ppt.png','ppt.png','excel.png','excel.png','word.png','word.png'];
                 let i = ['ppt','pptx','xls','xlsx','doc','docx'].indexOf(v.fileType);
@@ -256,8 +355,14 @@ class DetailcontractForm extends Component {
                             })}
                         ></TextareaItem> 
                         <button className="btnBlueLong" type="submit" onClick={this.submit} style={{marginBottom: '1vh'}}>提交</button>
-                   </div>
-
+                    </div>
+                      {/* 待我审批进入之后，合同操作按钮 */}
+                    <div className={checking_type == '内审审批' && isRebut ? "operationBtns flex_ac" : 'isHide'}>
+                        <div className="btn btn_b" onClick={() => this.conveyFn()}>转交</div>
+                        {/*<div className="btn btn_b" onClick={() => this.conveyFn2()}>转交</div>*/}
+                        <div className="btn btn_g" onClick={() => this.operationFn('PASS')}>同意</div>
+                        <div className="btn btn_r" onClick={() => {Control.go(`/rebutinfo/${this.props.params.id}`);}}>驳回</div>
+                    </div>
                 </div>
             )
         } else {

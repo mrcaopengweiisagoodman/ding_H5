@@ -129,7 +129,7 @@ class AddtenderingForm extends Component {
 	submit = () => {
 		this.props.form.validateFields((error, value) => {
 			let { approver ,copyPerson , enclosure} = this.state;
-			if (!approver || !enclosure || error) {
+			if (!approver.length || !enclosure.length || error) {
 				dd.device.notification.alert({
 				    message: "您有未填写项！",
 				    title: "温馨提示",
@@ -144,7 +144,7 @@ class AddtenderingForm extends Component {
 				})
 				let originatorName = localStorage.getItem('userName'),
 					originatorId = localStorage.getItem('userId'),
-					url = encodeURI(`${AUTH_URL}#/detailtendering/`);
+					url = encodeURIComponent(`${AUTH_URL}#/detailtendering/`);
 				fetch(`${AUTH_URL}bidding/create`,{
 					method: 'POST',
 					headers: {
@@ -158,7 +158,8 @@ class AddtenderingForm extends Component {
 						copyPerson: copyPerson,
 						enclosure: enclosure,
 						originatorId: originatorId,
-						originatorName: originatorName
+						originatorName: originatorName,
+						deptName: JSON.parse(localStorage.getItem('dept')).deptName
 					})
 				})
 				.then(res => res.json())

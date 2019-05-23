@@ -20,6 +20,19 @@ export default {
         	approver: [],
         	// 上传文件之后返回的数据数组
         	enclosure: [],
+            beTransfer: [],
+            checking_type: localStorage.getItem('checking_type'),
+            isRebut: localStorage.getItem('REBUT') == 'REBUT' ? true : false,
+            isLimitMsg: false,
+            // 已经留言过的信息
+            messageBoardMsgs: [],
+            // 留言板中书写的内容
+            writeMsg: '',
+            // 被@的联系人的id
+            emplIds: [],
+            // 留言板中@的人员name
+            messageBoard: [],
+
         }
     },
     /**

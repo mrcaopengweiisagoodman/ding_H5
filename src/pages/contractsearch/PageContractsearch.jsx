@@ -31,10 +31,15 @@ class ContractsearchForm extends Component {
     dispatchFn = (val) => {
         this.dispatch('setStateData',val)
     }
+    /*
+    * 查询合同
+    * internal/audit/search    查询内审合同
+    * contract/search          查询正常合同
+    */
     getSearchResult = ({searchWord}) => {
         let url_str;
         this.props.params.ori == 'audit' ? url_str = 'internal/audit/search' : url_str = 'contract/search';
-         fetch(`${AUTH_URL}${url_str}?pageNum=1&pageSize=1000&searchWord=${searchWord}`)
+        fetch(`${AUTH_URL}${url_str}?pageNum=1&pageSize=1000&searchWord=${searchWord}&contractId=${this.props.params.id}`)
         .then(res => res.json())
         .then(data => {
             /*dd.device.notification.alert({
@@ -71,6 +76,44 @@ class ContractsearchForm extends Component {
     searchChange = (e) => {
         this.dispatch('setStateData',{searchVal: e});
     }
+    /*
+    * 绑定合同关系，返回上级页面
+    */
+    back = (e,id) => {
+        e.stopPropagation();
+        if (id == this.props.params.id) {
+            dd.device.notification.alert({
+                message: '',
+                title: "温馨提示",
+                buttonName: "确定"
+            })
+            return
+        }
+        fetch(`${AUTH_URL}contract/mount?cid=${id}&pid=${this.props.params.id}&userId=${localStorage.getItem('userId')}`,{
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            /*dd.device.notification.alert({
+                message: "合同详情数据" + JSON.stringify(data),
+                title: "提示",
+                buttonName: "确定"
+            })*/
+            if (data.state == 'SUCCESS') {
+                dd.device.notification.toast({
+                    icon: 'success', //icon样式，有success和error，默认为空
+                    text: '添加成功！', //提示信息
+                });
+                Control.go(-1);
+                return
+            }
+            dd.device.notification.alert({
+                message: data.info,
+                title: "温馨提示",
+                buttonName: "确定"
+            })
+        })
+    }
     render() {
         const { getFieldProps } = this.props.form;
         let { searchVal , listData} = this.state;
@@ -78,10 +121,15 @@ class ContractsearchForm extends Component {
         // listData = contractJson.search.values.search.list;
         // 测试数据结束
         let searchResultCom = listData.map((v,i) => {
-            return  <Link to={`/detailcontract/${v.contractId}`} className="listHeight flex_bc">
+            let cid , url;
+            if (v.biddingId) {cid = v.biddingId;url = `/detailtendering/${cid}`};
+            if (v.innerAuditId){ cid = v.biddingId;url = `/detailauditapprove/${cid}`}
+            if (v.contractId){ cid = v.contractId; url = `/detailcontract/${cid}`;};
+            return  <Link to={url} className="listHeight flex_bc">
                         <span className="leftName textOverflow_1">{v.title}</span>
                         <div className="flex_ec paySelect">
-                            <img className="fileIcon" src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
+                            {/*<img className="fileIcon" src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />*/}
+                            <div className="color_b bangding" onClick={(e) => this.back(e,cid)}>绑定</div>
                         </div>
                     </Link>
         })

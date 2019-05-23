@@ -113,7 +113,7 @@ class Tendering extends Component {
 							<div className="tenderingDetail">
 								<span>审批人</span>	
 								<div className="flex">
-									<div className="blueBox_">{JSON.parse(v.approver)[0].name}</div>	
+									<div className="blueBox_">{JSON.parse(v.approver)[0] ? JSON.parse(v.approver)[0].name : ''}</div>	
 									<img src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
 								</div>
 							</div>
@@ -135,7 +135,7 @@ class Tendering extends Component {
 							onBlur={this.searchBlur}
 							onChange={this.searchChange}
 						/> 
-						<Link to={`/detailtendering/72`} className="listBox">
+						{/*<Link to={`/detailtendering/72`} className="listBox">
 							<div className="list">
 								<div className="tenderingTitle">
 									<div>招投标名称</div>
@@ -151,7 +151,7 @@ class Tendering extends Component {
 									</div>
 								</div>
 							</div>
-						</Link>
+						</Link>*/}
 						{listCom}
 					</div>
 					<div className="tabBody">
@@ -182,10 +182,6 @@ class Tendering extends Component {
             </div>
         );
     }
-	componentDidMount () {
-		
-		
-	}
 }
 
 export default Tendering ;

@@ -15,10 +15,18 @@ export default {
         	userIds: [],
         	// 被@的联系人的id
             emplIds: [],
-        	// 留言板信息
+        	// 留言板中@的人员name
         	messageBoard: [],
+            // 已经留言过的信息
+            messageBoardMsgs: [],
         	// 是否已经选择@人
-        	isChooseContact: false
+        	isChooseContact: false,
+            checking_type: localStorage.getItem('checking_type'),
+            isRebut: localStorage.getItem('REBUT') == 'REBUT' ? true : false,
+            // 留言板信息是否已经提交
+            msgIsSubmit: false,
+            // 是否有权限留言
+            isLimitMsg: false
         }
     },
     /**

@@ -114,19 +114,21 @@ class DetailcontractForm extends Component {
                     showIcon: true, //是否显示icon，默认true
                 })
                 var params , 
-                    url = encodeURI(`${AUTH_URL}#/detailtendering/${id}`);
+                    url = encodeURIComponent(`${AUTH_URL}#/detailtendering/${id}`);
                     userIds.join(',');
                 emplIds.length ? params = {
                                     id: id,
                                     content: value.content,
                                     redirectUrl: url,
-                                    type: 1,
-                                    notified: emplIds.join(',')
+                                    type: 2,
+                                    notified: emplIds.join(','),
+                                    userId: localStorage.getItem('userId')
                                }: params = {
                                     id: id,
                                     content: value.content,
                                     redirectUrl: url,
-                                    type: 1,
+                                    type: 2,
+                                    userId: localStorage.getItem('userId')
                                };
 
                 fetch(`${AUTH_URL}bidding/leave/message`,{
@@ -251,7 +253,7 @@ class DetailcontractForm extends Component {
             })
             return (
                 <div className="addcontract detailcontract">
-                    <p className="title">合同类型</p>
+                  {/*  <p className="title">合同类型</p>
                     <div className="listHeight flex">
                         <div className="checkeBox flex">
                             <Checkbox className="checkeList" checked={detailData.contractType == 0} />
@@ -261,7 +263,7 @@ class DetailcontractForm extends Component {
                             <Checkbox className="checkeList" checked={detailData.contractType == 1} />
                             <span>非标准化</span>
                         </div>
-                    </div>
+                    </div>*/}
                     <p className="title">基本信息</p>
                     <div className="listHeight flex">
                         <span className="leftText f_14 color_gray">部门</span>

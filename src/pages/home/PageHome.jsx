@@ -18,7 +18,7 @@ import {
 	NavBar ,
 	Toast
 } from 'antd-mobile';
-const { IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL ,IMGCOMMONURI } = require(`config/develop.json`);
 
 
 class Home extends Component {
@@ -26,9 +26,31 @@ class Home extends Component {
 		super(props, logic);        
 		mydingready.ddReady({pageTitle: '风控'});
     }
+    componentDidMount () {
+    	this.getCount();
+    }
+      /**
+    * 发送自定义事件（设置state）
+    */
+    dispatchFn = (val) => {
+        this.dispatch('setStateData2',val)
+    }
+    /*
+    * 获取待审核文件的数量
+    */
+    getCount = () => {
+	   	fetch(`${AUTH_URL}summary/count/need_me_approval?userId=${localStorage.getItem('userId')}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.state == 'SUCCESS') {
+              	this.dispatchFn({count: data.values.pageInfos.total});
+            }
+        })
+    }
     render() {
-        const { state: { menu, tabbarIndex, badge, },  } = this;
+        const { state: { menu, tabbarIndex, badge, count}  } = this;
 		mydingready.ddReady({ddApiState: 'getUser'});
+		console.log(count)
       	
         return (
             <div className="home">
@@ -38,29 +60,27 @@ class Home extends Component {
 					{/* 正式环境图片的路径 */}
 					<img src={`${IMGCOMMONURI}dsp.png`} />
 					<p>待我审批</p>
-					<div>12</div>	
+					<div className={count ? '' : 'isHide'}>{count}</div>	
 				</Link>
 				<div className="rectangle"></div>
 				<Flex wrap="wrap">
 					<Link className="navList" to="/tendering">
 						<img src={`${IMGCOMMONURI}ztb.png`} />
 						<p>招投标</p>
-						<div>12</div>	
 					</Link>
 					<Link className="navList" to="/contract">
 						<img src={`${IMGCOMMONURI}ht.png`} />
 						<p>合同</p>
-						<div>12</div>	
 					</Link>
 					<Link className="navList" to="/audit">
 						<img src={`${IMGCOMMONURI}ns.png`} />
 						<p>年审</p>
-						<div>12</div>	
+					</Link>
+					<Link className="navList" to="/apply">
+						<img src={`${IMGCOMMONURI}ns.png`} />
+						<p>风控进场申请</p>
 					</Link>
 				</Flex>
-				
-				{/* 选择联系人测试 */}
-				
 				
                 {/*中间嵌套的页面*/}
                 {/* {this.props.children} */}
@@ -68,10 +88,6 @@ class Home extends Component {
 				
             </div>
         );
-    }
-
-    componentDidMount() {
-		console.log(this.state)
     }
 }
 

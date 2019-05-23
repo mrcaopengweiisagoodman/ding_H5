@@ -1,0 +1,46 @@
+@import './../../assets/css/reset.less';
+@import './../apply/PageApply.less';
+
+
+.fileBox{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	min-height: 4.4rem;
+	.file{
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 30vw;
+		height: 30vw;
+		margin: 10px 1.5vw;
+		.fileIcon{
+			width: 5.2rem;
+			height: 6.2rem;
+			margin-bottom: .5rem;
+		}
+		.selectedBtn{
+			width: 6.2rem;
+			height: 6.2rem;
+		}
+		p{
+			height: 1.5rem;
+			line-height: 1.5rem;
+			font-size: 1.4rem;
+			color: #333;
+		}
+		.closeBtn{
+			position: absolute;
+			top: 0;
+			right: 0;
+			margin: 0 0 10px 10px;
+			img{
+				width: 1.4rem;
+				height: 1.4rem;
+			}
+		}
+	}
+}
+

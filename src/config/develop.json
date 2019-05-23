@@ -3,8 +3,8 @@
     "CORP_ID": "dingc911fab81353be9335c2f4657eb6378f",
     "AGENTID": 250221472,
     "AUTH_URL": "http://119.3.68.67:8080/",
-    "APP_URL": { "url": "http://119.3.68.67:8080/" },
-    "MOCK_URL": "http://119.3.68.67:8080/",
+    "APP_URL": { "url": "http://192.168.3.199:3000/" },
+    "MOCK_URL": "http://192.168.3.199:3000/",
     "IMGCOMMONURI": "src/assets/imgs/",
     "CONFIG_APP_URL": "http://192.168.3.199:3000/" 
 }

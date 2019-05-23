@@ -184,7 +184,7 @@ class AddcontractrelationForm extends Component {
             let originatorId = localStorage.getItem('userId'),
                 originatorName = localStorage.getItem('userName');
             let { pid,contractType, eventType ,approver ,payTime,reminderTime , enclosure,paymentSettings} = this.state;
-            if (!approver || !enclosure || error) {
+            if (!approver.length || !enclosure.length || error) {
                 dd.device.notification.alert({
                     message: "您有未填写项！",
                     title: "温馨提示",
@@ -241,7 +241,7 @@ class AddcontractrelationForm extends Component {
                     text: "提交中...", //loading显示的字符，空表示不显示文字
                     showIcon: true, //是否显示icon，默认true
                 })
-                let url = encodeURI(`${AUTH_URL}#/detailcontract/`),
+                let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/`),
 	            	params = {
 	                    contractType: contractType,
 	                    deptId: dept.deptId,
