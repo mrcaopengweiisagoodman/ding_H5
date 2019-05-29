@@ -1,5 +1,6 @@
 // 部门合同列表页面
 require('./PageDeptcontractlists.less');
+
 import logic from './PageLogic';
 import { Component, LogicRender } from 'refast';  
 import { 
@@ -18,10 +19,8 @@ import mydingready from './../../dings/mydingready';
 import testJson from './../../test_json/contract';
 import { createForm } from 'rc-form';
 import moment from 'moment';
-
+console.log(localStorage.getItem('dateStyleChange'))
 const { AUTH_URL , IMGCOMMONURI } = require(`config/develop.json`);
-
-
 
 class DeptcontractlistsForm extends Component {
     constructor(props) { 
@@ -242,7 +241,7 @@ class DeptcontractlistsForm extends Component {
                         </Link>*/}
                         <div className="box_b color_b" onClick={(e) => {this.goRelation(e,30,'父合同标题')}}>关联合同审批</div>
                 	</div>          
-                	{listCom}
+                	{listData.length ? listCom : ''}
                 </div>
             </div>
         );

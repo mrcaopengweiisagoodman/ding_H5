@@ -24,8 +24,16 @@ export default {
             checking_type: localStorage.getItem('checking_type'),
             // 留言板信息是否已经提交
             msgIsSubmit: false,
-            isRebut: localStorage.getItem('REBUT') == 'REBUT' ? true : false
-            
+            isRebut: localStorage.getItem('REBUT') == 'REBUT' ? true : false,
+            isLimitMsg: false,
+             // 被@的联系人的id
+            emplIds: [],
+            // 留言板中@的人员name
+            messageBoard: [],
+            // 留言板中书写的内容
+            writeMsg: '',
+            // 已经留言过的信息
+            messageBoardMsgs: [],
         }
     },
     /**

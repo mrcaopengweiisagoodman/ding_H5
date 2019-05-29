@@ -46,11 +46,11 @@ class Auditapprove extends Component {
         fetch(url)
         .then(res => res.json())
         .then(data => {
-            dd.device.notification.alert({
+           /* dd.device.notification.alert({
                 message: "数据加载成功" + JSON.stringify(data),
                 title: "警告",
                 buttonName: "确定"
-            });
+            });*/
             if (data.state == 'SUCCESS') {
                 this.dispatchFn({listData: data.values.biddings.list});
                 this.dispatchFn({
@@ -75,16 +75,17 @@ class Auditapprove extends Component {
         })
     }
     render() {
-        const { tabs , listData ,searchVal} = this.state;
-        let data1 = [{"name":"田ert帅","avatar":"","emplId":"0125056400964069"},{"name":"田帅2","avatar":"","emplId":"0121156400954069"}];
-        let approverCom = data1.map(v=>{
-        // let approverCom = approver.map(v=>{
+        const { tabs , listData ,searchVal,approver} = this.state;
+        /*let data1 = [{"name":"田ert帅","avatar":"","emplId":"0125056400964069"},{"name":"田帅2","avatar":"","emplId":"0121156400954069"}];
+        let approverCom = data1.map(v=>{*/
+            console.log(listData)
+       /* let approverCom = JSON.parse(listData.approver).map(v=>{
             return <div key={v.emplId}>
                         <div className="box_b manBox">
                             <div className="color_b">{v.name}</div>
                         </div>
                     </div>
-        });
+        });*/
         const tabNode = tabs.forEach( (v,inx) => {
             return <span>{v.title}</span>
         })
@@ -108,7 +109,16 @@ class Auditapprove extends Component {
                             <div className="tenderingTitle flex">
                                 <span>审批人</span>
                                 <div className="manArr">
-                                    {approverCom}
+                                    {
+                                        JSON.parse(v.approver).map(a=>{
+                                            return <div key={a.emplId}>
+                                                        <div className="box_b manBox">
+                                                            <div className="color_b">{a.name}</div>
+                                                        </div>
+                                                    </div>
+                                        })
+
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -168,7 +178,7 @@ class Auditapprove extends Component {
                               </div>
                             </div>
                         </Link>*/}
-                        {listCom}
+                        {listData.length ? listCom : ''}
                     </div>
                     <div className="tabBody">
                         <SearchBar className="searchBox" placeholder="审批人/投标名称" 
@@ -178,7 +188,7 @@ class Auditapprove extends Component {
                             onChange={this.searchChange}
                         /> 
                         <div>
-                            {listCom}
+                            {listData.length ? listCom : ''}
                         </div>
                     </div>
                     <div className="tabBody">
@@ -189,7 +199,7 @@ class Auditapprove extends Component {
                             onChange={this.searchChange}
                         /> 
                         <div>
-                            {listCom}
+                            {listData.length ? listCom : ''}
                         </div>
                     </div>
                 </Tabs>

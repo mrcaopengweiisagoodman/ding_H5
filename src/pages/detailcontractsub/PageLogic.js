@@ -20,6 +20,15 @@ export default {
         	approver: [],
         	// 上传文件之后返回的数据数组
         	enclosure: [],
+            isLimitMsg: false,
+            // 被@的联系人的id
+            emplIds: [],
+            // 留言板中@的人员name
+            messageBoard: [],
+            // 留言板中书写的内容
+            writeMsg: '',
+            // 已经留言过的信息
+            messageBoardMsgs: [],
         }
     },
     /**

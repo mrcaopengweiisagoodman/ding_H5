@@ -385,7 +385,7 @@ class AddcontractrelationForm extends Component {
                     <span className="leftText f_14 color_gray">关联合同</span>
                     <div className="f_14">{pTitle}</div>
                 </Link>
-                <p className="title">合同类型</p>
+               {/* <p className="title">合同类型</p>
                 <div className="listHeight flex">
                     <div className="checkeBox flex">
                         <Checkbox className="checkeList" checked={!contractType} onChange={this.checkedChange} />
@@ -395,7 +395,7 @@ class AddcontractrelationForm extends Component {
                         <Checkbox className="checkeList" checked={contractType} onChange={this.checkedChange} />
                         <span>非标准化</span>
                     </div>
-                </div>
+                </div>*/}
                 <p className="title">基本信息</p>
                 <div className="listHeight flex">
                     <span className="leftText f_14 color_gray">部门</span>
@@ -404,7 +404,7 @@ class AddcontractrelationForm extends Component {
                 <div className="line_gray"></div>
                 <div className="name">
                     <TextareaItem 
-                        className="textArea"
+                        style={{height: 'auto',background: '#fff'}}
                         rows={2}
                         placeholder="合同标题（必填）"
                         {...getFieldProps('title',{

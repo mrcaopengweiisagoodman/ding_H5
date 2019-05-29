@@ -29,6 +29,7 @@ class Auditcontract extends Component {
     }
     componentDidMount () {
         this.getDeptInfo();
+        localStorage.setItem('dateStyleChange','true');
     }
     /**
     * 发送自定义事件（设置state）
@@ -60,6 +61,7 @@ class Auditcontract extends Component {
                     ele.name = data.values.info[e];
                     info.push(ele);
                 }
+                dd.device.notification.hidePreloader({});
                 this.dispatchFn({
                     listData: info
                 })

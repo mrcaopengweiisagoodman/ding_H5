@@ -27,7 +27,6 @@ class Waitingapproval extends Component {
     }
     componentDidMount () {
         this.getTenderingList({state: 'CHECKING'});
-
     }
     /**
     * 发送自定义事件（设置state）
@@ -47,11 +46,11 @@ class Waitingapproval extends Component {
         fetch(url)
         .then(res => res.json())
         .then(data => {
-            dd.device.notification.alert({
+            /*dd.device.notification.alert({
                 message: "数据加载成功" + JSON.stringify(data),
                 title: "警告",
                 buttonName: "确定"
-            });
+            });*/
             if (data.state == 'SUCCESS') {
                 this.dispatchFn({listData: data.values.approvalList});
                 this.dispatchFn({
@@ -164,7 +163,7 @@ class Waitingapproval extends Component {
                             onBlur={this.searchBlur}
                             onChange={this.searchChange}
                         /> 
-                        {listCom}
+                        {listData.length ? listCom : '暂无数据'}
                     </div>
                     <div className="tabBody">
                         <SearchBar className="searchBox" placeholder="审批人/投标名称" 
@@ -174,7 +173,7 @@ class Waitingapproval extends Component {
                             onChange={this.searchChange}
                         /> 
                         <div>
-                            {listCom}
+                            {listData.length ? listCom : '暂无数据'}
                         </div>
                     </div>
                     <div className="tabBody">
@@ -185,7 +184,7 @@ class Waitingapproval extends Component {
                             onChange={this.searchChange}
                         /> 
                         <div>
-                            {listCom}
+                            {listData.length ? listCom : '暂无数据'}
                         </div>
                     </div>
                 </Tabs>

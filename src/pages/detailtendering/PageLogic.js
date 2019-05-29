@@ -17,6 +17,8 @@ export default {
             emplIds: [],
         	// 留言板中@的人员name
         	messageBoard: [],
+           // 留言板中书写的内容
+            writeMsg: '',
             // 已经留言过的信息
             messageBoardMsgs: [],
         	// 是否已经选择@人
@@ -26,7 +28,7 @@ export default {
             // 留言板信息是否已经提交
             msgIsSubmit: false,
             // 是否有权限留言
-            isLimitMsg: false
+            isLimitMsg: false,
         }
     },
     /**

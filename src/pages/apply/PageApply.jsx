@@ -146,7 +146,7 @@ class Apply extends Component {
                 >
                 </Tabs>*/}
                     <div className="standard">
-                        {listCom}
+                        {listData.length ? listCom : ''}
                     </div>
                    
                 <Link type='img' src={`${IMGCOMMONURI}add_big.png`} className='addTenderingBtn' to={ '/addapply' } />

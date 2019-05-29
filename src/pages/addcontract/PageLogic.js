@@ -27,7 +27,17 @@ export default {
             payTime_8: '',
             payTime_9: '',
             payTime_10: '',
-
+            description_0: '',
+            description_1: '',
+            description_2: '',
+            description_3: '',
+            description_4: '',
+            description_5: '',
+            description_6: '',
+            description_7: '',
+            description_8: '',
+            description_9: '',
+            description_10: '',
             // 动态添加款项内容
             addMoneyList: [1],
         	// 0:标准合同；1：非
@@ -49,7 +59,9 @@ export default {
                     reminderTime: new Date(),
                     payCondition: ''
                 }
-            ]
+            ],
+            // 选取部门
+            departments: []
         }
     },
     /**

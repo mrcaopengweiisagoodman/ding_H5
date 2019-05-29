@@ -79,22 +79,30 @@ class DetailtenderingForm extends Component {
     * 获取被@的联系人
     */
     getRemindContacts = (e) => {
+        let { messageBoard, emplIds, writeMsg} = this.state;
         let inx = e.indexOf('@');
-        if (inx != -1 && !this.state.isChooseContact) {
+        let isDel = true;// 联系人名称是否被回撤掉
+
+
+        // 有1个@，messageBoard值为0;且最后一个字符为@；被删除掉的时候不调取联系人
+        if (e.charAt(e.length - 1) == '@' && isDel) {
             mydingready.ddReady({
                 context: this,
                 ddApiState: 'userIds',
                 setFn: this.dispatchFn,
                 otherData: {
-                    isChooseContact: true
+                    isChooseContact: true,
+                    writeMsg: e
                 }
             });
         }
+        // 留言板清空时
         if (!e) {
             this.dispatchFn({
                 messageBoard: [],
                 emplIds: [],
-                isChooseContact: false
+                isChooseContact: false,
+                writeMsg: ''
             })
         }
     }
@@ -102,16 +110,10 @@ class DetailtenderingForm extends Component {
     * 提交留言
     */
     submit = () => {
-        let { id,emplIds ,userIds,checking_type} = this.state;
-
-        dd.device.notification.alert({
-            message: "userIds的值为---" + JSON.stringify(userIds),
-            title: "温馨提示",
-            buttonName: "确定"
-        });
+        let { id,emplIds ,messageBoard,userIds,checking_type} = this.state;
 
         this.props.form.validateFields((error,value) => {
-            console.log(value);
+            
             if (!error) {
                 if (!value.content) {
                     dd.device.notification.alert({
@@ -121,7 +123,14 @@ class DetailtenderingForm extends Component {
                     });
                     return
                 }
-
+                // 选择之后再次删除，对应的玩家名称和玩家id删除
+                for (let ele_ of messageBoard) {
+                    let i = value.content.indexOf(ele_);
+                    if (i == -1) {
+                        messageBoard.splice(i);
+                        emplIds.splice(i);
+                    }
+                }
                 dd.device.notification.showPreloader({
                     text: "提交中...", //loading显示的字符，空表示不显示文字
                     showIcon: true, //是否显示icon，默认true
@@ -150,7 +159,6 @@ class DetailtenderingForm extends Component {
                     method: 'POST',
                     headers: {
                         'Content-Type': "application/json",
-                        // 'Access-Control-Allow-Origin':'*'
                     },
                     body: JSON.stringify(params)
                 })
@@ -172,6 +180,7 @@ class DetailtenderingForm extends Component {
                                 text: '留言提交成功！', 
                                 duration: 2, 
                             });
+                            Control.go(-1); 
                             return
                         };
                         dd.device.notification.toast({
@@ -179,10 +188,7 @@ class DetailtenderingForm extends Component {
                             text: '提交成功！', 
                             duration: 2, 
                         });
-                        let timer = setTimeout(function () {
-                            window.location.href = '#/tendering';
-                            clearTimeout(timer);
-                        },2000);
+                        Control.go(-1);
                         return
                     }
                     dd.device.notification.alert({
@@ -326,7 +332,7 @@ class DetailtenderingForm extends Component {
                         </div>
             });
             let messageBoardMsgsCom = messageBoardMsgs.map((v,i) => {
-                return  <div>
+                return  <div style={{background: '#fff'}}>
                             <div className="selectedMan" key={v.userName}>
                                 <p className="color_gray">用户名</p>
                                 <div className="manArr detailManArr flex">
@@ -349,7 +355,7 @@ class DetailtenderingForm extends Component {
                                     </span>
                                 </div>
                             </div>
-                            <div className={!i ? 'line_box' : "isHide"}></div>
+                            <div className={i < messageBoardMsgs.length - 1 ? 'line_box' : "isHide"}></div>
                         </div>
             })
             return (

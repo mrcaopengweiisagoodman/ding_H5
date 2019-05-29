@@ -47,7 +47,40 @@ class DetailcontractForm extends Component {
                 buttonName: "确定"
             })*/
             if (data.state == 'SUCCESS') {
-                let {messageBoardMsgs , isLimitMsg} = this.state;
+                let contractSettings = data.values.contract.contractSettings;
+                // 测试数据开始
+               /* data.values.contract.approvalState = 'PASS';
+                let contractSettings = JSON.stringify([
+                    {
+                        "contractSettingId": 5,
+                        "contractId": 44,
+                        "description": "步骤一",
+                        "enclosure": null,
+                        "reminderTime": null,
+                        "myStatus": 1,
+                        "myComment": "asfasfas",
+                        "otherStatus": 2,
+                        "otherComment": "zdfasd",
+                        "isReminder": false,
+                        "createTime": "2019-05-21T17:38:22",
+                        "updateTime": "2019-05-27T18:01:11"
+                    }, {
+                        "contractSettingId": 6,
+                        "contractId": 44,
+                        "description": "步骤二",
+                        "enclosure": null,
+                        "reminderTime": "2019-05-21T17:38:22",
+                        "myStatus": 1,
+                        "myComment": "asfasfas",
+                        "otherStatus": 2,
+                        "otherComment": "zdfasd",
+                        "isReminder": false,
+                        "createTime": "2019-05-21T17:38:22",
+                        "updateTime": "2019-05-27T18:01:11"
+                    },
+                ]);*/
+                // 测试数据结束
+                let {messageBoardMsgs , isLimitMsg , buzhou_now} = this.state;
                 let messageBoardArr, messageBoardObj;
                 let inx_a = data.values.contract.approver.indexOf(localStorage.getItem('userId'));
                 if (inx_a > -1) isLimitMsg = true;
@@ -68,16 +101,87 @@ class DetailcontractForm extends Component {
                     id: id,
                     detailData: data.values.contract,
                     messageBoardMsgs: messageBoardMsgs,
-                    isLimitMsg: isLimitMsg
+                    isLimitMsg: isLimitMsg,
+                    contractSettingId: contractSettings && contractSettings.length ? contractSettings[0].contractSettingId : '',
+                    contractSettings: contractSettings && contractSettings ? contractSettings : [],
+                    buzhou_now: contractSettings && contractSettings.length ? contractSettings[0] : buzhou_now
                 })
             }
         })
+    }
+    /**
+    * 调用钉钉api
+    * 选择联系人、附件等
+    * @param addApiState 要执行的api
+    *
+    */
+    toDdJsApi = (ddApiState) => {
+        if (ddApiState == 'uploadFile') {
+            if (!mydingready.globalData.userId) {
+                mydingready.globalData.userId = localStorage.getItem('userId');
+            }
+            this.getSpaceGrant({
+                type: 'add',
+                userId: mydingready.globalData.userId,
+                ddApiState: ddApiState
+            });
+            return
+        }
+        mydingready.ddReady({
+            context: this,
+            ddApiState: ddApiState,
+            setFn: this.dispatchFn
+        });
+    }
+    /*
+    * 获取存储空间权限（next：企业自定义空间）
+    * @param [String] type       文件操作方式（add/download）
+    * @param [String] userId     用户id
+    * @param [String] ddApiState
+    */
+    getSpaceGrant = ({type,userId,ddApiState}) => {
+        fetch(`${AUTH_URL}ding/grant/role?type=${type}&userId=${userId}`,{
+            method: 'POST'
+        })
+        .then( res => res.json())
+        .then(data => {
+            if (data.state == 'SUCCESS') {
+                fetch(`${AUTH_URL}ding/gain/space`)
+                .then( res => res.json())
+                .then( result => {
+                    if (result.state == 'SUCCESS') {
+                        mydingready.ddReady({
+                            context: this,
+                            ddApiState: ddApiState,
+                            setFn: this.dispatchFn,
+                            otherData: {spaceId: result.values.spaceId}
+                        });
+                    }
+                })
+            }
+        })
+    }
+    /*
+    * 删除文件
+    * @param [String] fileId 文件Id
+    *
+    */
+    delFile = (e,fileId) => {
+        e.stopPropagation();
+        let data = {},
+            { enclosure } = this.state;
+        for (let i = 0;i < enclosure.length;i++) {
+            if (fileId == enclosure[i].fileId) {
+                enclosure.splice(i,1);
+                break;
+            }
+        }   
+        this.dispatchFn(data);
     }
      /**
     * 预览文件 (钉钉api)
     */
     previewFile = (fileInfo) => {
-        console.log(fileInfo)
         mydingready.ddReady({
             context: this,
             ddApiState: 'previewFile',
@@ -88,22 +192,30 @@ class DetailcontractForm extends Component {
     * 获取被@的联系人
     */
     getRemindContacts = (e) => {
+        let { messageBoard, emplIds, writeMsg} = this.state;
         let inx = e.indexOf('@');
-        if (inx != -1 && !this.state.isChooseContact) {
+        let isDel = true;// 联系人名称是否被回撤掉
+
+
+        // 有1个@，messageBoard值为0;且最后一个字符为@；被删除掉的时候不调取联系人
+        if (e.charAt(e.length - 1) == '@' && isDel) {
             mydingready.ddReady({
                 context: this,
                 ddApiState: 'userIds',
                 setFn: this.dispatchFn,
                 otherData: {
-                    isChooseContact: true
+                    isChooseContact: true,
+                    writeMsg: e
                 }
             });
         }
+        // 留言板清空时
         if (!e) {
             this.dispatchFn({
                 messageBoard: [],
                 emplIds: [],
-                isChooseContact: false
+                isChooseContact: false,
+                writeMsg: ''
             })
         }
     }
@@ -111,14 +223,7 @@ class DetailcontractForm extends Component {
     * 提交留言
     */
     submit = () => {
-        let { id,emplIds ,userIds,writeMsg} = this.state;
-
-        dd.device.notification.alert({
-            message: "userIds的值为---" + JSON.stringify(userIds),
-            title: "温馨提示",
-            buttonName: "确定"
-        });
-
+        let { id,emplIds,messageBoard ,userIds,writeMsg} = this.state;
         this.props.form.validateFields((error,value) => {
             console.log(value);
             if (!error) {
@@ -130,7 +235,14 @@ class DetailcontractForm extends Component {
                     });
                     return
                 }
-
+                // 选择之后再次删除，对应的玩家名称和玩家id删除
+                for (let ele_ of messageBoard) {
+                    let i = value.content.indexOf(ele_);
+                    if (i == -1) {
+                        messageBoard.splice(i);
+                        emplIds.splice(i);
+                    }
+                }
                 dd.device.notification.showPreloader({
                     text: "提交中...", //loading显示的字符，空表示不显示文字
                     showIcon: true, //是否显示icon，默认true
@@ -144,13 +256,15 @@ class DetailcontractForm extends Component {
                                     redirectUrl: url,
                                     type: 2,
                                     notified: emplIds.join(','),
-                                    userId: localStorage.getItem('userId')
+                                    userId: localStorage.getItem('userId'),
+                                    userName: localStorage.getItem('userName')
                                }: params = {
                                     id: id,
                                     content: value.content,
                                     redirectUrl: url,
                                     type: 2,
-                                    userId: localStorage.getItem('userId')
+                                    userId: localStorage.getItem('userId'),
+                                    userName: localStorage.getItem('userName')
                                };
 
                 fetch(`${AUTH_URL}bidding/leave/message`,{
@@ -169,16 +283,13 @@ class DetailcontractForm extends Component {
                             isChooseContact: false,
                             writeMsg: ''
                         });
-                        dd.device.notification.hidePreload({});
+                        dd.device.notification.hidePreloader({});
                         dd.device.notification.toast({
                             icon: 'success', 
                             text: '提交成功！', 
                             duration: 2, 
                         });
-                        let timer = setTimeout(function () {
-                            window.location.href = '#/contract';
-                            clearTimeout(timer);
-                        },2000);
+                        Control.go(-1);
                     }
                 })
             }
@@ -289,41 +400,154 @@ class DetailcontractForm extends Component {
     componentWillUnmount () {
         localStorage.removeItem('REBUT');
     }
+    /* 
+    * 合同步骤tab切换
+    */
+    hetongTab = (id ,inx) => {
+        let { buzhou_now ,contractSettings } = this.state;
+        this.dispatchFn({
+            buzhou_now: contractSettings[inx],
+            contractSettingId: id
+        });
+    }
+    /*
+    * 审批人
+    */
+    myStatusChange = (status_str, status) => {
+        this.dispatchFn({
+            [status_str]: status
+        });
+    }
+
+    /* 
+     * 风控选择是否未完成
+     */
+    checkedChange2 = (e,val) => {
+        e.target.checked = !e.target.checked;
+        this.dispatchFn({
+            status_fengkong: val
+        });
+    }
+    /* */
+    buzhouFn = () => {
+        let userId = localStorage.getItem('userId');
+        let { buzhou_now , isWind} = this.state;
+        this.props.form.validateFields((error,value) => {
+            console.log('步骤按钮',value);
+            if (!error) {
+                // 审批人
+                this.ownMiaoshu(userId,value);
+                // 风控人员
+                if (isWind) {
+                    this.fenkongMiaoshu(userId,value);
+                }
+            }   
+        });
+    }
+    /* 只提交描述总结 */
+    ownMiaoshu = (userId,val) => {
+        let { buzhou_now , status_geren,enclosure ,isWind} = this.state,
+            params = {
+                content: val.content_miaoshu,
+                status: status_geren,
+                enclosure: enclosure,
+                userId: userId
+            };
+        fetch(`${AUTH_URL}contract/modify/my/step/${buzhou_now.contractSettingId}`,{
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json" 
+            },
+            body: JSON.stringify(params)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.state == "SUCCESS" && !isWind) {
+                this.getDetail(this.props.params.id);
+                return
+            }
+            dd.device.notification.alert({
+                message: data.info,
+                title: "温馨提示",
+                buttonName: "确定"
+            })
+        })
+    }
+    /* 风控人员提交 */
+    fenkongMiaoshu = (userId,val) => {
+        let { buzhou_now ,status_fengkong} = this.state,
+            params = {
+                content: val.content_miaoshu,
+                status: status_fengkong,
+                userId: userId
+            };;
+        fetch(`${AUTH_URL}/contract/modify/wind/step/${buzhou_now.contractSettingId}`,{
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json" 
+            },
+            body: JSON.stringify(params)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.state == "SUCCESS") {
+                this.getDetail(this.props.params.id);
+                return
+            }
+            dd.device.notification.alert({
+                message: data.info,
+                title: "温馨提示",
+                buttonName: "确定"
+            });
+        })
+    }
     render() {
         let administrators = [],
             myUserId = localStorage.getItem('userId');
         const { getFieldProps } = this.props.form;
 
-        let { messageBoardMsgs,styleInfo,contractType ,isLimitMsg,checking_type,eventType ,approver ,enclosure ,isRebut,detailData,searchVal} = this.state;
-        
-        console.log(isLimitMsg)
+        let { 
+            status_geren,
+            contractSettingId ,
+            buzhou_now,
+            contractSettings,
+            isWind,
+            messageBoardMsgs,
+            styleInfo,
+            contractType ,
+            isLimitMsg,
+            checking_type,
+            eventType ,
+            status_fengkong,
+            approver ,
+            enclosure ,
+            isRebut,
+            detailData,
+            searchVal
+        } = this.state;
+
         // 测试数据开始
         // detailData = contractJson.detail.contract;
      
         // 测试数据结束
 
         if (detailData) {
-            // 测试数据
-            let paymentSettingsCom = JSON.parse(detailData.paymentSettings).map(v => {
-                if (detailData.eventType == 0) return;
-                return  <div>  
-                            <div className='listHeight flex'>
-                                <span className="leftText f_14 color_gray">{detailData.eventType == 1 ? '收款时间' : '付款时间'}</span>
-                                <div>{moment(v.payTime).format('YYYY.MM.DD HH:mm')}</div>
+            let enclosure_upload_com = enclosure.map(v => {
+                let fileTypeImg, 
+                    fileTypeImgArr = ['ppt.png','ppt.png','excel.png','excel.png','word.png','word.png'];
+                let i = ['ppt','pptx','xls','xlsx','doc','docx'].indexOf(v.fileType);
+                i != -1 ? fileTypeImg = fileTypeImgArr[i] : fileTypeImg = 'unknown.png';
+                return <div className="file" onClick={() => this.previewFile(v)}>
+                            <img className="fileIcon" src={`${IMGCOMMONURI}${fileTypeImg}`} />
+                            <p className="textOverflow_1">{v.fileName}</p>
+                            <div className="closeBtn" onClick={(e) => {this.delFile(e,v.fileId)}}>
+                                <img src={`${IMGCOMMONURI}delete.png`} />
                             </div>
-                            <div className="line_gray"></div>
-                            <div className="listHeight flex">
-                                <span className="leftText f_14 color_gray">{detailData.eventType == 1 ? '收款条件' : '付款条件'}</span>
-                                <div className="maxW">{v.payCondition}</div>
-                            </div>
-                            <div className="line_gray"></div>
-                            <div className="listHeight flex">
-                                <span className="leftText f_14 color_gray">提醒时间</span>
-                                <div>{moment(v.reminderTime).format('YYYY.MM.DD HH:mm')}</div>
-                            </div>
-                            <div className="line_box"></div>
                         </div>
-
+            })
+            
+            let contractSettingsCom = contractSettings.map((v,i) => {
+                return  <div className={v.contractSettingId == contractSettingId ? "tab color_b" : "tab"} onClick={() => this.hetongTab(v.contractSettingId,i)}>步骤 {i + 1}</div>
             })
            /* let a = [
                  {
@@ -346,7 +570,7 @@ class DetailcontractForm extends Component {
                     fileTypeImgArr = ['ppt.png','ppt.png','excel.png','excel.png','word.png','word.png'];
                 let i = ['ppt','pptx','xls','xlsx','doc','docx'].indexOf(v.fileType);
                 i != -1 ? fileTypeImg = fileTypeImgArr[i] : fileTypeImg = 'unknown.png';
-                return <div className="file" onClick={() => this.previewFile('previewFile',v)}>
+                return <div className="file" onClick={() => this.previewFile(v)}>
                             <img className="fileIcon" src={`${IMGCOMMONURI}${fileTypeImg}`} />
                             <p className="textOverflow_1">{v.fileName}</p>
                         </div>
@@ -369,7 +593,7 @@ class DetailcontractForm extends Component {
                         </Link>
             });
             let messageBoardMsgsCom = messageBoardMsgs.map((v,i) => {
-                return  <div>
+                return  <div style={{background: '#fff'}}>
                             <div className="selectedMan" key={v.userName}>
                                 <p className="color_gray">用户名</p>
                                 <div className="manArr detailManArr flex">
@@ -392,7 +616,7 @@ class DetailcontractForm extends Component {
                                     </span>
                                 </div>
                             </div>
-                            <div className={!i ? 'line_box' : "isHide"}></div>
+                            <div className={i < messageBoardMsgs.length - 1 ? 'line_box' : "isHide"}></div>
                         </div>
             })
             return (
@@ -427,26 +651,11 @@ class DetailcontractForm extends Component {
                         <span className="leftText f_14 color_gray">类型</span>
                         <p className="maxW">{detailData.eventType == 1 ? '收款' : '付款' }</p>
                     </div>
-                    <p className={detailData.eventType ? 'title' : 'isHide'}>款项信息</p>
-                    {paymentSettingsCom}
-                    {/* 收款、付款时间 */}
-                   {/* <div className={detailData.eventType ? '' : 'isHide'}>  
-                                           <div className="line_gray"></div>
-                                           <div className="listHeight flex">
-                                               <span className="leftText f_14 color_gray">收款条件</span>
-                                               <div className="maxW">这里是收款条件这里是收款条件这里是收款条件</div>
-                                           </div>
-                                           <div className="line_gray"></div>
-                                           <div className="listHeight flex">
-                                               <span className="leftText f_14 color_gray">提醒时间</span>
-                                               <div>2019-09-09</div>
-                                           </div>
-                                           <div className="line_box"></div>
-                                       </div>*/}
                     <div className="listHeight flex">
                         <span className="leftText f_14 color_gray">合同金额</span>
                         <div className="color_orange">￥{detailData.amount}</div>
                     </div>
+                    <div className="line_gray"></div>
                     <div className="listHeight flex">
                         <span className="leftText f_14 color_gray">租期</span>
                         <div>{detailData.leaseTerm}天</div>
@@ -494,6 +703,89 @@ class DetailcontractForm extends Component {
                             <span className={detailData.approvalState ? styleInfo[detailData.approvalState].color : ''}>{styleInfo[detailData.approvalState].str}</span>
                         </div>
                     </div>
+                    <div className='line_box'></div>
+                    {/* 合同步骤 --- 审批完成之后 */}
+                    <div className={detailData.approvalState == "PASS" && contractSettings.length && detailData.originatorId == myUserId ? "buzhou" : "isHide"}>
+                        <div className="bz_left">
+                            {/*<div className="tab" onClick={this.hetongTab}>步骤一</div>*/}
+                            {contractSettingsCom}
+                        </div>
+                        <div className="bz_right">
+                            <div className="miaoshu">
+                                <div className="listHeight">
+                                    <span className="leftText f_14 color_gray">步骤描述</span>
+                                    <div>{buzhou_now.description ? buzhou_now.description : '暂无描述'}</div>
+                                </div>
+                                <div className="listHeight">
+                                    <span className="leftText f_14 color_gray">提醒时间</span>
+                                    <div>{buzhou_now.reminderTime ? moment(buzhou_now.reminderTime).format('YYYY.MM.DD HH:mm') : '暂无'}</div>
+                                </div>
+                                <div className="listHeight flex">
+                                    <span className="leftText f_14 color_gray">状态</span>
+                                    <div className="flex">
+                                        <div className={status_geren == 1 ? "color_g_d dui" : 'color_gray dui'} onClick={() => this.myStatusChange('status_geren',1)}>√</div>
+                                        <div className={status_geren == 0 ? "color_r_c cuo" : 'color_gray cuo'} onClick={() => this.myStatusChange('status_geren',0)}>×</div>
+                                    </div>
+                                </div>
+                                <p className="title">上传附件</p>
+                                <div className="fileBox">
+                                    {enclosure_upload_com}
+                                    <div className="file" onClick={() => this.toDdJsApi('uploadFile')}>
+                                        <img className="fileIcon selectedBtn" src={`${IMGCOMMONURI}z z.png`} />
+                                        <p>上传附件</p>
+                                    </div>
+                                </div>
+                                <div className='biddingName'> 
+                                    <p className="title">完成内容</p>
+                                    <TextareaItem 
+                                        className="textArea"
+                                        rows={5}
+                                        onBlur={(e) => {console.log(e)}}
+                                        placeholder="完成内容等信息"
+                                        {...getFieldProps('content_wancheng',{
+                                            
+                                            rules:[{required: false,message:'此处输入备注、补充审批等信息！'}]
+                                        })}
+                                    ></TextareaItem> 
+                                </div>
+                                {/* 风控权限在获取用户名接口中 ding/gain/dept/info */}
+                                <div className={isWind ? "listHeight flex" : 'isHide'}>
+                                    <div className="checkeBox flex">
+                                        <Checkbox className="checkeList" checked={status_fengkong == 2 ? true : false} onChange={(e) => this.checkedChange2(e,2)} />
+                                        <span>已完成</span>
+                                    </div>
+                                    <div className="checkeBox flex">
+                                        <Checkbox className="checkeList" checked={status_fengkong == 1 ? true : false} onChange={(e) => this.checkedChange2(e,1)} />
+                                        <span>未完成</span>
+                                    </div>
+                                    <div className="checkeBox flex">
+                                        <Checkbox className="checkeList" checked={status_fengkong == 0 ? true : false} onChange={(e) => this.checkedChange2(e,0)} />
+                                        <span>待确认</span>
+                                    </div>
+                                </div>
+                                <div className={isWind ? 'biddingName' : 'isHide'}> 
+                                    <p className="title">描述</p>
+                                    <TextareaItem 
+                                        className="textArea"
+                                        rows={5}
+                                        onBlur={(e) => {console.log(e)}}
+                                        placeholder=""
+                                        {...getFieldProps('content_miaoshu',{
+                                            
+                                            rules:[{required: false,message:'此处输入备注、补充审批等信息！'}]
+                                        })}
+                                    ></TextareaItem> 
+                                </div>
+                                <button className="btnBlueLong" type="submit" onClick={this.buzhouFn} style={{marginBottom: '1vh'}}>提交合同步骤</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
                        {/* 留言板 --- 只有抄送人和审批人进行操作 */}
                     <div className={detailData.messageBoard ? "showMsgs" : 'isHide'}>
                         <p className="title">留言历史</p>

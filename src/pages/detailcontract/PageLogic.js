@@ -5,6 +5,7 @@ export default {
     defaults(props) {
         //初始的state
          return {  
+            test: '',
             ...PageConst,
             id: '',
             detailData: null,
@@ -19,20 +20,35 @@ export default {
         	// 审批人
         	approver: [],
         	// 上传文件之后返回的数据数组
-        	enclosure: [],
+            enclosure: [],
             beTransfer: [],
             checking_type: localStorage.getItem('checking_type'),
             isRebut: localStorage.getItem('REBUT') == 'REBUT' ? true : false,
             isLimitMsg: false,
-            // 已经留言过的信息
-            messageBoardMsgs: [],
-            // 留言板中书写的内容
-            writeMsg: '',
             // 被@的联系人的id
             emplIds: [],
             // 留言板中@的人员name
             messageBoard: [],
-
+            // 留言板中书写的内容
+            writeMsg: '',
+            // 已经留言过的信息
+            messageBoardMsgs: [],
+            // 风控状态: 0未确认 1未完成 2已完成
+            status_fengkong:  2,
+            // 状态 0 x 1√
+            status_geren: 1,
+            isWind: JSON.parse(localStorage.getItem('dept')).isWind,
+            // isWind: true,
+            // 当前的步骤id
+            contractSettingId: '',
+            // 步骤对象集合
+            contractSettings: [],
+            // 当前显示的步骤信息
+            buzhou_now: {
+               /* contractSettingId: 0,
+                reminderTime: new Date(),
+                description: ''*/
+            }
         }
     },
     /**

@@ -66,22 +66,30 @@ class DetailcontractForm extends Component {
     * 获取被@的联系人
     */
     getRemindContacts = (e) => {
+        let { messageBoard, emplIds, writeMsg} = this.state;
         let inx = e.indexOf('@');
-        if (inx != -1 && !this.state.isChooseContact) {
+        let isDel = true;// 联系人名称是否被回撤掉
+
+
+        // 有1个@，messageBoard值为0;且最后一个字符为@；被删除掉的时候不调取联系人
+        if (e.charAt(e.length - 1) == '@' && isDel) {
             mydingready.ddReady({
                 context: this,
                 ddApiState: 'userIds',
                 setFn: this.dispatchFn,
                 otherData: {
-                    isChooseContact: true
+                    isChooseContact: true,
+                    writeMsg: e
                 }
             });
         }
+        // 留言板清空时
         if (!e) {
             this.dispatchFn({
                 messageBoard: [],
                 emplIds: [],
-                isChooseContact: false
+                isChooseContact: false,
+                writeMsg: ''
             })
         }
     }
@@ -169,7 +177,7 @@ class DetailcontractForm extends Component {
             myUserId = localStorage.getItem('userId');
         const { getFieldProps } = this.props.form;
 
-        let { styleInfo,contractType ,eventType ,approver ,enclosure ,detailData,searchVal} = this.state;
+        let { messageBoardMsgs,isLimitMsg,styleInfo,contractType ,eventType ,approver ,enclosure ,detailData,searchVal} = this.state;
         console.log(contractJson)
         
         // 测试数据开始
@@ -250,6 +258,33 @@ class DetailcontractForm extends Component {
                                 <img className="fileIcon" src={`${IMGCOMMONURI}common_level2_icon_bg_color.png`} />
                             </div>
                         </Link>
+            })
+             let messageBoardMsgsCom = messageBoardMsgs.map((v,i) => {
+                return  <div style={{background: '#fff'}}>
+                            <div className="selectedMan" key={v.userName}>
+                                <p className="color_gray">用户名</p>
+                                <div className="manArr detailManArr flex">
+                                    <span>{v.userName}</span> 
+                                </div>
+                            </div>
+                            <div className="line_gray"></div>
+                            <div className="selectedMan">
+                                <p className="color_gray">留言内容</p>
+                                <div className="manArr detailManArr flex">
+                                    {v.content} 
+                                </div>
+                            </div>
+                            <div className="line_gray"></div>
+                            <div className="selectedMan">
+                                <p className="color_gray">留言时间</p>
+                                <div className="manArr detailManArr flex" style={{}}>
+                                    <span>
+                                        {v.createTime}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className={i < messageBoardMsgs.length - 1 ? 'line_box' : "isHide"}></div>
+                        </div>
             })
             return (
                 <div className="addcontract detailcontract">
@@ -353,9 +388,13 @@ class DetailcontractForm extends Component {
                         </div>
                     </div>
                        {/* 留言板 --- 只有抄送人和审批人进行操作 */}
+                    <div className={detailData.messageBoard ? "showMsgs" : 'isHide'}>
+                        <p className="title">留言历史</p>
+                        {messageBoardMsgsCom}
+                    </div>
+                       {/* 留言板 --- 只有抄送人和审批人进行操作 */}
                     <div className={detailData.approvalState == 'REBUT' ? 'line_gray' : 'isHide'}></div>
-                    <div className={detailData.approvalState == 'REBUT' && administrators.indexOf(myUserId) != -1 ? 'biddingName' : 'isHide'} style={{padding: '0 3vw'}}>
-                    {/*<div className="biddingName"> */}
+                    <div className={isLimitMsg ? 'biddingName' : "isHide"}> 
                         <p className="title">留言板</p>
                         <TextareaItem 
                             className="textArea"
@@ -368,7 +407,7 @@ class DetailcontractForm extends Component {
                             })}
                         ></TextareaItem> 
                         <button className="btnBlueLong" type="submit" onClick={this.submit} style={{marginBottom: '1vh'}}>提交</button>
-                   </div>
+                    </div>
 
                 </div>
             )

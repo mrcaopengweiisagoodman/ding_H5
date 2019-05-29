@@ -82,8 +82,12 @@ class Contract extends Component {
             let paymentTimeCom = JSON.parse(v.paymentSettings).map(a => {
                 return  <div className="list">
                             <div className="tenderingTitle flex">
-                                <span>付款期限</span>
-                                <p>{moment(a.payTime).format('YYYY.MM.DD HH:mm')}</p>
+                                <span>提醒时间</span>
+                                <p>{moment(a.reminderTime).format('YYYY.MM.DD HH:mm')}</p>
+                            </div>
+                            <div className="tenderingTitle flex">
+                                <span>步骤描述</span>
+                                <p className="textOverflow_1">{a.description}</p>
                             </div>
                         </div>
             });
@@ -126,7 +130,7 @@ class Contract extends Component {
                 >
                 </Tabs>*/}
                     <div className="standard">
-                        {listCom}
+                        {listData.length ? listCom : ''}
                     </div>
                    
                 <Link type='img' src={`${IMGCOMMONURI}add_big.png`} className='addTenderingBtn' to={ '/addcontract' } />

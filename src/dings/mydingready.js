@@ -63,11 +63,11 @@ class DingReadyMine {
 		.then(res => res.json())
 		.then(data => {
 			if (data.state == 'SUCCESS') {
-				dd.device.notification.alert({
+				/*dd.device.notification.alert({
 					message: "用户信息 : " + JSON.stringify(data),
 					title: "用户信息",
 					buttonName: "OK"
-				});
+				});*/
      			localStorage.setItem('userName',data.values.name);
      			// 部门信息
      			localStorage.setItem('dept',JSON.stringify(data.values));
@@ -149,20 +149,43 @@ class DingReadyMine {
 								})
 							} else if (stateStr == 'userIds') {
 								let { messageBoard , emplIds} = context.state,
-									userIds = users;
-								
+									userIds = users,
+									now_user_str = '';
 								for (let el of userIds) {
+									if (messageBoard.indexOf(el.name) != -1) {
+							            for (let ele of messageBoard) {
+							                if(otherData.writeMsg.indexOf(ele) != -1) {
+							                	setFn({writeMsg: otherData.writeMsg.substring(0,otherData.writeMsg.length - 1)});
+							                	context.props.form.setFieldsValue({
+												    content: otherData.writeMsg.substring(0,otherData.writeMsg.length - 1)
+												});
+												dd.device.notification.alert({
+													message: '该联系人已经选取！'+JSON.stringify(userIds)+ "---" +JSOn.stringify(messageBoard),
+													title: "温馨提示",
+													buttonName: "确定"
+												});
+							                	return
+							                }
+							            }
+							        }
+					                // 再次选人时
+					                if (JSON.stringify(messageBoard).indexOf(el.name) == -1) {
+					                	now_user_str += `${el.name}  @`;
+					                }
 					                messageBoard.push(el.name);
 					                emplIds.push(el.emplId);
 					            }
+			            		now_user_str = now_user_str.substring(0,now_user_str.length-1);
 								context.props.form.setFieldsValue({
-								    content: '@' + [...new Set(messageBoard)].join('@'),
+								    // content: otherData.writeMsg + [...new Set(messageBoard)].join('@') + '  ',
+								    content: otherData.writeMsg + now_user_str + '  ',
 								});
 								setFn({
 									userIds: users,
 									messageBoard: [...new Set(messageBoard)],
 									emplIds: [...new Set(emplIds)],
-									isChooseContact: otherData.isChooseContact
+									isChooseContact: otherData.isChooseContact,
+									writeMsg: otherData.writeMsg + [...new Set(messageBoard)].join('@') + '  '
 								});
 							} else {
 								// 转交时联系人为单选
@@ -174,7 +197,7 @@ class DingReadyMine {
 						},
 						onFail : function(err) {
 							dd.device.notification.alert({
-								message: "选择联系人错误:" + JSON.stringify(result),
+								message: "选择联系人错误:" + JSON.stringify(err),
 								title: "警告",
 								buttonName: "确定"
 							});
@@ -248,6 +271,31 @@ class DingReadyMine {
 			            }
 			        });
 				},
+				// 选取部门
+				departments: () => {
+					dd.biz.contact.departmentsPicker({
+					    title:"选取部门",            //标题
+					    corpId: CORP_ID,              //企业的corpId
+					    appId: AGENTID,              //微应用的Id
+					    multiple: true,            //是否多选
+					    limitTips: "超出了",          //超过限定人数返回提示
+					    maxDepartments: 1,            //最大选择部门数量
+					    pickedDepartments:[],          //已选部门
+					    disabledDepartments:[],        //不可选部门
+					    requiredDepartments:[],        //必选部门（不可取消选中状态）
+					    permissionType: "GLOBAL",          //选人权限，目前只有GLOBAL这个参数
+					    onSuccess: function(result) {
+		                	setFn({departments: result.departments});
+					    },
+					   	onFail : function(err) {
+					   		dd.device.notification.alert({
+								message: "选择部门出错:" + JSON.stringify(err),
+								title: "警告",
+								buttonName: "确定"
+							});
+					   	}
+					});
+				}
 			}
 			ddJsApiHandle[ddApiState]();
 		})

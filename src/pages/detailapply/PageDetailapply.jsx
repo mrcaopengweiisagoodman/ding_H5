@@ -51,7 +51,6 @@ class Detailapply extends Component {
     * 预览文件 (钉钉api)
     */
     previewFile = (fileInfo) => {
-        console.log(fileInfo)
         mydingready.ddReady({
             context: this,
             ddApiState: 'previewFile',
@@ -87,7 +86,7 @@ class Detailapply extends Component {
                 fileTypeImgArr = ['ppt.png','ppt.png','excel.png','excel.png','word.png','word.png'];
             let i = ['ppt','pptx','xls','xlsx','doc','docx'].indexOf(v.fileType);
             i != -1 ? fileTypeImg = fileTypeImgArr[i] : fileTypeImg = 'unknown.png';
-            return <div className="file" onClick={() => this.previewFile('previewFile',v)}>
+            return <div className="file" onClick={() => this.previewFile(v)}>
                         <img className="fileIcon" src={`${IMGCOMMONURI}${fileTypeImg}`} />
                         <p className="textOverflow_1">{v.fileName}</p>
                     </div>
@@ -100,33 +99,37 @@ class Detailapply extends Component {
                         </div>
                     </div>
         });
-      
-       
-        return (
-            <div className="addcontract detailcontract">
-                <div className="listHeight flex">
-                    <span className="leftText f_14 color_gray">申请事项</span>
-                    <div>{detailData.applyEvent}</div>
-                </div>
-                <div className="line_gray"></div>
-                <div className="selectedMan bg_ff">
-                    <p className="color_gray">审批人</p>
-                    <div className="manArr detailManArr">
-                        {approverCom}
+        if (detailData) {
+            return (
+                <div className="addcontract detailcontract">
+                    <div className="listHeight flex">
+                        <span className="leftText f_14 color_gray">申请事项</span>
+                        <div>{detailData.applyEvent}</div>
+                    </div>
+                    <div className="line_gray"></div>
+                    <div className="selectedMan bg_ff">
+                        <p className="color_gray">审批人</p>
+                        <div className="manArr detailManArr">
+                            {approverCom}
+                        </div>
+                    </div>
+                    <div className="line_gray"></div>
+                    <p className="title">相关附件</p>
+                    <div className="fileBox">
+                        {enclosureCom}
+                    </div>
+                    <div className="line_gray"></div>
+                    <div className="listHeight flex">
+                        <span className="leftText f_14 color_gray">提交时间</span>
+                        <div>{moment(detailData.createTime).format('YYYY.MM.DD HH:mm')}</div>
                     </div>
                 </div>
-                <div className="line_gray"></div>
-                <p className="title">相关附件</p>
-                <div className="fileBox">
-                    {enclosureCom}
-                </div>
-                <div className="line_gray"></div>
-                <div className="listHeight flex">
-                    <span className="leftText f_14 color_gray">提交时间</span>
-                    <div>{moment(detailData.createTime).format('YYYY.MM.DD HH:mm')}</div>
-                </div>
-            </div>
-        )
+            )
+        } else {
+            return (
+                <div></div>
+            )
+        }
     }
 
 }

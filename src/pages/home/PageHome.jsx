@@ -74,7 +74,7 @@ class Home extends Component {
 					</Link>
 					<Link className="navList" to="/audit">
 						<img src={`${IMGCOMMONURI}ns.png`} />
-						<p>年审</p>
+						<p>内审</p>
 					</Link>
 					<Link className="navList" to="/apply">
 						<img src={`${IMGCOMMONURI}ns.png`} />

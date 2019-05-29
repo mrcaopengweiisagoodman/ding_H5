@@ -24,7 +24,9 @@ class Audit extends Component {
         mydingready.ddReady({pageTitle: '内审'});
         
     }
-
+    componentDidMount () {
+        localStorage.removeItem('dateStyleChange');
+    }
     render() {
         return (
             <div className="audit">

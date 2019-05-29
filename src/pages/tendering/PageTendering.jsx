@@ -152,7 +152,7 @@ class Tendering extends Component {
 								</div>
 							</div>
 						</Link>*/}
-						{listCom}
+						{listData.length ? listCom : ''}
 					</div>
 					<div className="tabBody">
 						<SearchBar className="searchBox" placeholder="审批人/投标名称" 
@@ -162,7 +162,7 @@ class Tendering extends Component {
 							onChange={this.searchChange}
 						/> 
 						<div>
-							{listCom}
+							{listData.length ? listCom : ''}
 						</div>
 					</div>
 					<div className="tabBody">
@@ -173,7 +173,7 @@ class Tendering extends Component {
 							onChange={this.searchChange}
 						/> 
 						<div>
-							{listCom}
+							{listData.length ? listCom : ''}
 						</div>
 					</div>
 				</Tabs>

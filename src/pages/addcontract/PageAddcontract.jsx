@@ -42,9 +42,10 @@ class AddcontractForm extends Component {
             eventType: val,
             paymentSettings: [
                 {
-                    payTime: new Date(),
+                    // payTime: new Date(),
                     reminderTime: new Date(),
-                    payCondition: ''
+                    // payCondition: '',
+                    description: ''
                 }
             ]
         })
@@ -55,9 +56,10 @@ class AddcontractForm extends Component {
     addPayment = () => {
         console.log('添加选项！')
         let obj = {
-                    payTime: new Date(),
+                    // payTime: new Date(),
                     reminderTime: new Date(),
-                    payCondition: ''
+                    // payCondition: '',
+                    description: ''
                 },
             { paymentSettings } = this.state;
             paymentSettings.push(obj);
@@ -174,7 +176,7 @@ class AddcontractForm extends Component {
             console.log('表单值---',value)
             let originatorId = localStorage.getItem('userId'),
                 originatorName = localStorage.getItem('userName');
-            let { contractType, eventType ,approver ,payTime,reminderTime , enclosure,paymentSettings} = this.state;
+            let { departments ,contractType, eventType ,approver ,payTime,reminderTime , enclosure,paymentSettings} = this.state;
             if (!approver.length || !enclosure.length || error) {
                 dd.device.notification.alert({
                     message: "您有未填写项！",
@@ -221,13 +223,21 @@ class AddcontractForm extends Component {
                     console.log('租期')
 
                     return
+                } else if (!departments.length) {
+                    dd.device.notification.toast({
+                        icon: 'error',
+                        text: `请填写正确的租期天数！`, 
+                        duration: 2, 
+                    });
+                    return
                 }
                 for (let j = 0;j < paymentSettings.length;j++) {
-                    paymentSettings[j].payTime = this.state[`payTime_${j}`];
+                    // paymentSettings[j].payTime = this.state[`payTime_${j}`];
                     paymentSettings[j].reminderTime = this.state[`reminderTime_${j}`];
-                    paymentSettings[j].payCondition = value[`payCondition_${j}`];
+                    // paymentSettings[j].payCondition = value[`payCondition_${j}`];
+                    paymentSettings[j].description = value[`description_${j}`];
                 }
-                let dept = JSON.parse(localStorage.getItem('dept'));
+                // let dept = JSON.parse(localStorage.getItem('dept'));
                 dd.device.notification.showPreloader({
                     text: "提交中...", //loading显示的字符，空表示不显示文字
                     showIcon: true, //是否显示icon，默认true
@@ -235,8 +245,8 @@ class AddcontractForm extends Component {
                 let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/`),
                     params = {
                     contractType: contractType,
-                    deptId: dept.deptId,
-                    deptName: dept.deptName,
+                    deptId: departments[0].id,
+                    deptName: departments[0].name,
                     title: value.title,
                     partyName: value.partyName,
                     eventType: eventType,
@@ -251,11 +261,11 @@ class AddcontractForm extends Component {
                     redirectUrl: url
                 }
 
-              /*  dd.device.notification.alert({
-                    message: JSON.stringify(params),
+                dd.device.notification.alert({
+                    message: JSON.stringify(params) + '---'+JSON.stringify(departments),
                     title: '新增合同参数',
                     buttonName: "确定"
-                });*/
+                });
 
 
 
@@ -278,6 +288,7 @@ class AddcontractForm extends Component {
                             onSuccess : function(result) {
                                 // 回列表展示页
                                 window.location.href = '#/contract';
+                                dd.device.notification.hidePreloader({});
                             },
                             onFail : function(err) {}
                         });
@@ -292,9 +303,17 @@ class AddcontractForm extends Component {
             }
         })
     }
+    /* 选取部门 */
+    selectionDept = () => {
+        mydingready.ddReady({
+            context: this,
+            setFn: this.dispatchFn,
+            ddApiState: 'departments'
+        });
+    }
     render() {
         let dept = JSON.parse(localStorage.getItem('dept'));
-        const { contractType ,eventType ,approver ,enclosure ,addMoneyList,payTime,reminderTime,paymentSettings} = this.state;
+        const { departments,contractType ,eventType ,approver ,enclosure ,addMoneyList,payTime,reminderTime,paymentSettings} = this.state;
         const { getFieldProps } = this.props.form;
         let approverCom = approver.map(v=>{
             return <div key={v.emplId} style={{margin: '5px 1.5vw'}}>
@@ -337,14 +356,26 @@ class AddcontractForm extends Component {
         let paymentSettingsCom = paymentSettings.map((v,inx) => {
             return  <div className="paymentBox">
                         {/* 日期选择器（antd-m） */}
-                        <DatePicker
+                        {/*<DatePicker
                             mode="date"
                             extra="请选择"
                             value={this.state[`payTime_${inx}`]}
                             onChange={(date) => {this.dateChange(date,`payTime_${inx}`)}}
                         >
-                            <List.Item arrow="horizontal">收款时间</List.Item>
-                        </DatePicker>
+                            <List.Item arrow="horizontal" className="f_16">收款时间</List.Item>
+                        </DatePicker>*/}
+                        {/* 步骤描述 */}
+                        <div className="name flex" style={{padding: '0 3vw'}}>
+                            <span className="leftText">步骤描述</span>
+                            <InputItem 
+                               className="inputItem"
+                               rows={2}
+                               placeholder="步骤简述"
+                               {...getFieldProps(`description_${inx}`,{
+                                   rules:[{required: false,message:'备注付款条件'}]
+                               })}
+                            ></InputItem> 
+                        </div>
                         <div className="line_gray"></div>
                         <DatePicker
                             mode="date"
@@ -352,9 +383,9 @@ class AddcontractForm extends Component {
                             value={this.state[`reminderTime_${inx}`]}
                             onChange={(date) => {this.dateChange(date,`reminderTime_${inx}`)}}
                         >
-                            <List.Item arrow="horizontal">提醒时间</List.Item>
+                            <List.Item arrow="horizontal" className="f_16">提醒时间</List.Item>
                         </DatePicker>
-                        <div className="line_gray"></div>
+                        {/*<div className="line_gray"></div>
                         <div className="name flex" style={{padding: '0 3vw'}}>
                             <span className="leftText">付款条件</span>
                             <InputItem 
@@ -365,7 +396,7 @@ class AddcontractForm extends Component {
                                    rules:[{required: false,message:'备注付款条件'}]
                                })}
                             ></InputItem> 
-                        </div>
+                        </div>*/}
                         <div className="line_box"></div>
                     </div>
         })
@@ -383,14 +414,15 @@ class AddcontractForm extends Component {
                     </div>
                 </div>*/}
                 <p className="title">基本信息</p>
-                <div className="listHeight flex">
+                <div className="listHeight flex" onClick={this.selectionDept}>
                     <span className="leftText f_14 color_gray">部门</span>
-                    <div className="f_14">{dept ? dept.deptName : ''}</div>
+                    {/*<div className="f_14">{dept ? dept.deptName : ''}</div>*/}
+                    <div className="f_14">{departments.length ?  departments[0].name : ''}</div>
                 </div>
                 <div className="line_gray"></div>
                 <div className="name">
                     <TextareaItem 
-                        className="textArea"
+                        style={{height: 'auto',background: '#fff'}}
                         rows={2}
                         placeholder="合同标题（必填）"
                         {...getFieldProps('title',{
@@ -400,7 +432,7 @@ class AddcontractForm extends Component {
                 </div>
                 <div className="line_gray"></div>
                 <div className="name flex" style={{padding: '0 3vw'}}>
-                    <span className="leftText">当事人</span>
+                    <span className="leftText f_16">当事人</span>
                     <InputItem 
                         className="inputItem"
                         rows={2}
@@ -424,9 +456,13 @@ class AddcontractForm extends Component {
                         <Checkbox className="checkeList" checked={eventType == 2 ? true : false} onChange={(e) => this.checkedChange2(e,2)} />
                         <span>付款</span>
                     </div>
+                    <div className="checkeBox flex">
+                        <Checkbox className="checkeList" checked={eventType == 3 ? true : false} onChange={(e) => this.checkedChange2(e,3)} />
+                        <span>收付款</span>
+                    </div>
                 </div>
                 <div className={!eventType ? 'paymentSetting isHide' : 'paymentSetting'}>
-                    <p className="title">款项设置</p>
+                    <p className="title">合同步骤</p>
                     <img className="fileIcon selectedBtn" src={`${IMGCOMMONURI}add_small.png`} onClick={this.addPayment} />
                     {/* 付款和收款时 paymentBox */}
                     {/*<div className="paymentBox">
@@ -448,7 +484,7 @@ class AddcontractForm extends Component {
                            </div>
                            <div className="line_gray"></div>
                            <div className="name flex" style={{padding: '0 3vw'}}>
-                               <span className="leftText">付款条件</span>
+                               <span className="leftText f_16">付款条件</span>
                                <InputItem 
                                    className="inputItem"
                                    rows={2}
@@ -463,7 +499,7 @@ class AddcontractForm extends Component {
                     {paymentSettingsCom}
                 </div>
                 <div className="name flex" style={{padding: '0 3vw'}}>
-                    <span className="leftText">合同金额</span>
+                    <span className="leftText f_16">合同金额</span>
                     <InputItem 
                         className="inputItem"
                         rows={2}
@@ -475,7 +511,7 @@ class AddcontractForm extends Component {
                 </div>
                 <div className="line_gray"></div>
                 <div className="name flex" style={{padding: '0 3vw'}}>
-                    <span className="leftText">租期</span>
+                    <span className="leftText f_16">租期</span>
                     <InputItem 
                         className="inputItem"
                         rows={2}
