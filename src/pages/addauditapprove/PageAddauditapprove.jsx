@@ -9,7 +9,7 @@ import {
 } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import mydingready from './../../dings/mydingready';
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI,CONFIG_APP_URL } = require(`config/develop.json`);
 
 
 class AddauditapproveForm extends Component {
@@ -154,7 +154,7 @@ class AddauditapproveForm extends Component {
                 })*/
                 let originatorName = localStorage.getItem('userName'),
                     originatorId = localStorage.getItem('userId'),
-                    url = encodeURIComponent(`${AUTH_URL}#/detailauditapprove/`);
+                    url = encodeURIComponent(`${CONFIG_APP_URL}#/detailauditapprove/`);
                 fetch(`${AUTH_URL}internal/audit/approval/create`,{
                     method: 'POST',
                     headers: {

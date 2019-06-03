@@ -17,7 +17,7 @@ import {
 } from 'react-keeper';
 import contractJson from './../../test_json/contract';
 
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI ,CONFIG_APP_URL} = require(`config/develop.json`);
 
 
 class RebutInfoCom extends Component {
@@ -70,7 +70,7 @@ class RebutInfoCom extends Component {
                     if (type == '合同') { return 2; }
                     if (type == '内审审批') { return 3; }
                 }
-             	let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/${this.props.params.id}`),
+             	let url = encodeURIComponent(`${CONFIG_APP_URL}#/detailcontract/${this.props.params.id}`),
 			            type = checking_type(),// 1是招投标 2是合同，3是内审
 			            userId = localStorage.getItem('userId'),
 			            state = 'REBUT',

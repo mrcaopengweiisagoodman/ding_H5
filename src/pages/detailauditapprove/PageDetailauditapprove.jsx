@@ -16,7 +16,7 @@ import {
     Control,
     Link
 } from 'react-keeper';
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI ,CONFIG_APP_URL} = require(`config/develop.json`);
 
 
 class DetailcontractForm extends Component {
@@ -131,7 +131,7 @@ class DetailcontractForm extends Component {
                     showIcon: true, //是否显示icon，默认true
                 })
                 var params , 
-                    url = encodeURIComponent(`${AUTH_URL}#/detailtendering/${id}`);
+                    url = encodeURIComponent(`${CONFIG_APP_URL}#/detailtendering/${id}`);
                     userIds.join(',');
                 emplIds.length ? params = {
                                     id: id,
@@ -190,7 +190,7 @@ class DetailcontractForm extends Component {
     * @param reason 驳回原因
     */ 
     operationFn = (state,reason) => {
-        let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/${this.props.params.id}`),
+        let url = encodeURIComponent(`${CONFIG_APP_URL}#/detailcontract/${this.props.params.id}`),
             type = 2,// 2是合同，3是内审
             userId = localStorage.getItem('userId'),
             params = `redirectUrl=${url}&stateEnum=${state}&type=${type}&userId=${userId}`;
@@ -253,7 +253,7 @@ class DetailcontractForm extends Component {
             if (type == '合同') { return 2; }
             if (type == '内审审批') { return 3; }
         }
-        let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/${this.props.params.id}`),
+        let url = encodeURIComponent(`${CONFIG_APP_URL}#/detailcontract/${this.props.params.id}`),
             userId = localStorage.getItem('userId'),
             params = `beTransferId=${beTransfer.emplId}&beTransferName=${beTransfer.name}&redirectUrl=${url}&type=${checking_type()}&userId=${userId}`;
         fetch(`${AUTH_URL}bidding/approval/transfer/${this.props.params.id}?${params}`,{

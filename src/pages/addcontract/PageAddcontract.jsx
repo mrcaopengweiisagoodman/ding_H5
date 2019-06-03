@@ -11,7 +11,7 @@ import {
 } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import mydingready from './../../dings/mydingready';
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI,CONFIG_APP_URL } = require(`config/develop.json`);
 
 class AddcontractForm extends Component {
     constructor(props) { 
@@ -242,31 +242,31 @@ class AddcontractForm extends Component {
                     text: "提交中...", //loading显示的字符，空表示不显示文字
                     showIcon: true, //是否显示icon，默认true
                 })
-                let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/`),
+                let url = encodeURIComponent(`${CONFIG_APP_URL}#/detailcontract/`),
                     params = {
-                    contractType: contractType,
-                    deptId: departments[0].id,
-                    deptName: departments[0].name,
-                    title: value.title,
-                    partyName: value.partyName,
-                    eventType: eventType,
-                    paymentSettings: paymentSettings,
-                    amount: Number(value.amount),
-                    leaseTerm: value.leaseTerm,
-                    enclosure: enclosure,
-                    content: value.content,
-                    approver: approver,
-                    originatorId: originatorId,
-                    originatorName: originatorName,
-                    redirectUrl: url
-                }
+                        contractType: contractType,
+                        deptId: departments[0].id,
+                        deptName: departments[0].name,
+                        title: value.title,
+                        partyName: value.partyName,
+                        eventType: eventType,
+                        paymentSettings: paymentSettings,
+                        amount: Number(value.amount),
+                        leaseTerm: value.leaseTerm,
+                        enclosure: enclosure,
+                        content: value.content,
+                        approver: approver,
+                        originatorId: originatorId,
+                        originatorName: originatorName,
+                        redirectUrl: url
+                    }
 
-                dd.device.notification.alert({
+                /*dd.device.notification.alert({
                     message: JSON.stringify(params) + '---'+JSON.stringify(departments),
                     title: '新增合同参数',
                     buttonName: "确定"
                 });
-
+*/
 
 
 
@@ -288,7 +288,6 @@ class AddcontractForm extends Component {
                             onSuccess : function(result) {
                                 // 回列表展示页
                                 window.location.href = '#/contract';
-                                dd.device.notification.hidePreloader({});
                             },
                             onFail : function(err) {}
                         });

@@ -9,7 +9,7 @@ import {
 } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import mydingready from './../../dings/mydingready';
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI ,CONFIG_APP_URL} = require(`config/develop.json`);
 
 
 class AddtenderingForm extends Component {
@@ -144,7 +144,7 @@ class AddtenderingForm extends Component {
 				})
 				let originatorName = localStorage.getItem('userName'),
 					originatorId = localStorage.getItem('userId'),
-					url = encodeURIComponent(`${AUTH_URL}#/detailtendering/`);
+					url = encodeURIComponent(`${CONFIG_APP_URL}#/detailtendering/`);
 				fetch(`${AUTH_URL}bidding/create`,{
 					method: 'POST',
 					headers: {
@@ -170,6 +170,7 @@ class AddtenderingForm extends Component {
 						    text: '添加成功！', //提示信息
 						    duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
 						    onSuccess : function(result) {
+						    	dd.device.notification.hidePreloader({});
 						    	// 回列表展示页
 						        window.location.href = '#/tendering';
 						    },

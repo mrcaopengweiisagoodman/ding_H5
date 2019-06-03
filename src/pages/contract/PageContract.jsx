@@ -95,6 +95,13 @@ class Contract extends Component {
                         <Link to={`/detailcontract/${v.contractId}`}>
                             <div className="list">
                                 <div className="tenderingTitle flex">
+                                    <span>合同编号</span>
+                                    <p>{v.code}</p>
+                                </div>
+                            </div>
+                            <div className="line"></div> 
+                            <div className="list">
+                                <div className="tenderingTitle flex">
                                     <span>当事人</span>
                                     <p>{v.partyName}</p>
                                 </div>

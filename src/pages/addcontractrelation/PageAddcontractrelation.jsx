@@ -14,7 +14,7 @@ import {
 } from 'react-keeper';
 import { createForm } from 'rc-form';
 import mydingready from './../../dings/mydingready';
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI,CONFIG_APP_URL } = require(`config/develop.json`);
 
 class AddcontractrelationForm extends Component {
     constructor(props) { 
@@ -241,7 +241,7 @@ class AddcontractrelationForm extends Component {
                     text: "提交中...", //loading显示的字符，空表示不显示文字
                     showIcon: true, //是否显示icon，默认true
                 })
-                let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/`),
+                let url = encodeURIComponent(`${CONFIG_APP_URL}#/detailcontract/`),
 	            	params = {
 	                    contractType: contractType,
 	                    deptId: dept.deptId,

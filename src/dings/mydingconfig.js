@@ -6,8 +6,14 @@ const { CORP_ID, AUTH_URL, APP_URL,CONFIG_APP_URL } = require(`config/develop.js
 
 class DingConfigMine {
 	getFn = () => {
+		let url;
+		if (window.location.href.indexOf('ismessage=true') != -1) {
+			url = `${AUTH_URL}ding/sign?url=${window.location.href}?dd_nav_bgcolor=FF2D87F7`;
+		} else {
+			url = `${AUTH_URL}ding/sign?url=${CONFIG_APP_URL}?dd_nav_bgcolor=FF2D87F7`;
+		}
 		$.ajax({
-			url: `${AUTH_URL}ding/sign?url=${CONFIG_APP_URL}?dd_nav_bgcolor=FF2D87F7`,
+			url: url,
 			// url: `http://192.168.3.219:8888/ding/sign?url=http://192.168.3.219:8888/index.html?dd_nav_bgcolor=FF2D87F7`,
 			type:"GET",
 			dataType:'json',

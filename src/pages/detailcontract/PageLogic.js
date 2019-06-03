@@ -3,6 +3,8 @@ import PageConst from './PageConst';
 
 export default {
     defaults(props) {
+        console.log('logic页面中信息内容！');
+        let isWind = JSON.parse(localStorage.getItem('dept')).isWind;
         //初始的state
          return {  
             test: '',
@@ -37,7 +39,8 @@ export default {
             status_fengkong:  2,
             // 状态 0 x 1√
             status_geren: 1,
-            isWind: JSON.parse(localStorage.getItem('dept')).isWind,
+            isWind: isWind ? isWind : !isWind,
+            // isWind: false,
             // isWind: true,
             // 当前的步骤id
             contractSettingId: '',

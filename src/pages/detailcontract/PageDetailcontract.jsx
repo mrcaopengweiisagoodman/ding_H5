@@ -10,19 +10,33 @@ import {
 } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import mydingready from './../../dings/mydingready';
+import mydingconfig from './../../dings/mydingconfig';
 import contractJson from './../../test_json/contract';
 import moment from 'moment';
 import {
     Control,
     Link
 } from 'react-keeper';
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI,CONFIG_APP_URL } = require(`config/develop.json`);
 
 
 class DetailcontractForm extends Component {
     constructor(props) { 
         super(props, logic);        
-        mydingready.ddReady({pageTitle: '合同详情'});
+        let url = window.location.href;
+        if (url.indexOf('ismessage=true') != -1) {
+            let timer = setTimeout(function(){
+                mydingready.ddReady({ddApiState: 'getUser',pageTitle: '合同详情'});
+                clearTimeout(timer);
+            },1000);
+        } else {
+            mydingready.ddReady({pageTitle: '合同详情'});
+        }
+        /*dd.device.notification.alert({
+            message: "合同页面拿到的数据---" + JSON.stringify(props) + '-------' + window.location.href,
+            title: "提示",
+            buttonName: "确定"
+        })*/
     }
     componentDidMount () {
         this.getDetail(this.props.params.id);   
@@ -41,6 +55,7 @@ class DetailcontractForm extends Component {
         fetch(`${AUTH_URL}contract/info/${id}`)
         .then(res => res.json())
         .then(data => {
+            console.log('获取详情接口！')
             /*dd.device.notification.alert({
                 message: "合同详情数据" + JSON.stringify(data),
                 title: "提示",
@@ -248,7 +263,7 @@ class DetailcontractForm extends Component {
                     showIcon: true, //是否显示icon，默认true
                 })
                 var params , 
-                    url = encodeURIComponent(`${AUTH_URL}#/detailtendering/${id}`);
+                    url = encodeURIComponent(`${CONFIG_APP_URL}#/detailtendering/${id}`);
                     userIds ? userIds.join(',') : '';
                 emplIds && emplIds.length ? params = {
                                     id: id,
@@ -306,7 +321,7 @@ class DetailcontractForm extends Component {
     * @param reason 驳回原因
     */ 
     operationFn = (state,reason) => {
-        let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/${this.props.params.id}`),
+        let url = encodeURIComponent(`${CONFIG_APP_URL}#/detailcontract/${this.props.params.id}`),
             type = 2,// 2是合同，3是内审
             userId = localStorage.getItem('userId'),
             params = `redirectUrl=${url}&stateEnum=${state}&type=${type}&userId=${userId}`;
@@ -368,7 +383,7 @@ class DetailcontractForm extends Component {
             if (type == '合同') { return 2; }
             if (type == '内审审批') { return 3; }
         }
-        let url = encodeURIComponent(`${AUTH_URL}#/detailcontract/${this.props.params.id}`),
+        let url = encodeURIComponent(`${CONFIG_APP_URL}#/detailcontract/${this.props.params.id}`),
             userId = localStorage.getItem('userId'),
             params = `beTransferId=${beTransfer.emplId}&beTransferName=${beTransfer.name}&redirectUrl=${url}&type=${checking_type()}&userId=${userId}`;
         fetch(`${AUTH_URL}bidding/approval/transfer/${this.props.params.id}?${params}`,{
@@ -634,9 +649,15 @@ class DetailcontractForm extends Component {
                     </div>*/}
                     <p className="title">基本信息</p>
                     <div className="listHeight flex">
+                        <span className="leftText f_14 color_gray">合同编号</span>
+                        <div>{detailData.code}</div>
+                    </div>
+                    <div className="line_gray"></div>
+                    <div className="listHeight flex">
                         <span className="leftText f_14 color_gray">部门</span>
                         <div>{detailData.deptName}</div>
                     </div>
+                    <div className="line_gray"></div>
                     <div className="name flex" style={{padding: '0 3vw'}}>
                         <span className="f_14 color_gray leftText">标题</span>
                         <p className="maxW">{detailData.title}</p>
@@ -651,6 +672,7 @@ class DetailcontractForm extends Component {
                         <span className="leftText f_14 color_gray">类型</span>
                         <p className="maxW">{detailData.eventType == 1 ? '收款' : '付款' }</p>
                     </div>
+                    <div className="line_gray"></div>
                     <div className="listHeight flex">
                         <span className="leftText f_14 color_gray">合同金额</span>
                         <div className="color_orange">￥{detailData.amount}</div>

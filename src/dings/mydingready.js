@@ -63,11 +63,11 @@ class DingReadyMine {
 		.then(res => res.json())
 		.then(data => {
 			if (data.state == 'SUCCESS') {
-				/*dd.device.notification.alert({
+				dd.device.notification.alert({
 					message: "用户信息 : " + JSON.stringify(data),
 					title: "用户信息",
 					buttonName: "OK"
-				});*/
+				});
      			localStorage.setItem('userName',data.values.name);
      			// 部门信息
      			localStorage.setItem('dept',JSON.stringify(data.values));

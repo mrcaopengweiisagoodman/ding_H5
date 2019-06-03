@@ -16,7 +16,7 @@ import {
     Control,
     Link
 } from 'react-keeper';
-const { AUTH_URL, IMGCOMMONURI } = require(`config/develop.json`);
+const { AUTH_URL, IMGCOMMONURI,CONFIG_APP_URL } = require(`config/develop.json`);
 
 
 class DetailcontractForm extends Component {
@@ -122,7 +122,7 @@ class DetailcontractForm extends Component {
                     showIcon: true, //是否显示icon，默认true
                 })
                 var params , 
-                    url = encodeURIComponent(`${AUTH_URL}#/detailtendering/${id}`);
+                    url = encodeURIComponent(`${CONFIG_APP_URL}#/detailtendering/${id}`);
                     userIds.join(',');
                 emplIds.length ? params = {
                                     id: id,

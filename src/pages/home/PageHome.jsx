@@ -27,6 +27,7 @@ class Home extends Component {
 		mydingready.ddReady({pageTitle: '风控'});
     }
     componentDidMount () {
+		mydingready.ddReady({ddApiState: 'getUser'});
     	this.getCount();
     }
       /**
@@ -49,7 +50,6 @@ class Home extends Component {
     }
     render() {
         const { state: { menu, tabbarIndex, badge, count}  } = this;
-		mydingready.ddReady({ddApiState: 'getUser'});
 		console.log(count)
       	
         return (
