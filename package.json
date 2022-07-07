@@ -18,7 +18,7 @@
         "classnames": "^2.2.6",
         "dingtalk-jsapi": "^2.6.26",
         "jquery": "^3.4.0",
-        "moment": "^2.24.0",
+        "moment": "^2.29.4",
         "natty-storage": "^1.1.2",
         "rc-form": "^2.4.4",
         "react": "^15.4.2",
