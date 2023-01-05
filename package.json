@@ -26,7 +26,7 @@
         "react-keeper": "^2.0.6",
         "react-router": "^4.1.1",
         "refast": "^1.1.0",
-        "svg-sprite-loader": "^0.3.0",
+        "svg-sprite-loader": "^6.0.11",
         "unity-api": "^2.2.1"
     },
     "devDependencies": {
